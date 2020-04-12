@@ -1,18 +1,18 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <PaymentCheckoutForm public-key="pk_test_6acc32ac21aa1b0f55d5e3b8"></PaymentCheckoutForm>
   </div>
 </template>
 
-<script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+<script lang="ts">
+import { Vue, Component } from 'vue-property-decorator'
+import PaymentCheckoutForm from '@/components/PaymentCheckoutForm.vue'
 
-export default {
-  name: 'Home',
+@Component({
   components: {
-    HelloWorld
+    PaymentCheckoutForm
   }
+})
+export default class MyPage extends Vue {
 }
 </script>

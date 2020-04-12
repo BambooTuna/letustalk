@@ -1,0 +1,17 @@
+version: "3.4"
+services:
+  mysql:
+    build: rdb/mysql
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_DATABASE=letustalk
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=BambooTuna
+      - MYSQL_PASSWORD=pass
+#  redis:
+#    image: redis:3.2.4-alpine
+#    restart: always
+#    ports:
+#      - 6379:6379

@@ -10,7 +10,7 @@ export type InvoiceDetail = {
   paid: boolean;
 }
 
-export type PaymentState = 'unpaid' | 'complete' | 'error'
+export type PaymentState = 'unpaid' | 'processing' | 'complete' | 'error'
 
 
 export type ErrorResponseJson = {

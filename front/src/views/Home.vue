@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <PaymentCheckoutForm :public-key="paymentPublicKey" @token-created-event="tokenCreatedEvent" @token-failed-event="tokenFailedEvent"></PaymentCheckoutForm>
+    <h1>お話しましょう〜</h1>
   </div>
 </template>
 
@@ -14,14 +14,5 @@ import PaymentCheckoutForm from '@/components/PaymentCheckoutForm.vue'
   }
 })
 export default class MyPage extends Vue {
-    public paymentPublicKey: string = process.env.VUE_APP_PAYMENT_PUB_KEY
-
-    tokenCreatedEvent (token: string) {
-      alert(token)
-    }
-
-    tokenFailedEvent (message: string) {
-      alert(message)
-    }
 }
 </script>

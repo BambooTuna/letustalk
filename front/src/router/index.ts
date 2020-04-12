@@ -10,9 +10,14 @@ const routes: Array<RouteConfig> = [
     component: () => import('@/views/Home.vue')
   },
   {
-    path: '/payment/test',
+    path: '/payment/test/:invoiceId',
     name: 'TestPayment',
     component: () => import('@/views/TestPayment.vue')
+  },
+  {
+    path: '*',
+    name: 'NotFound',
+    component: () => import('@/views/NotFound.vue')
   }
 ]
 

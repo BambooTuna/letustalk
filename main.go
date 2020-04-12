@@ -8,6 +8,7 @@ import (
 	"github.com/BambooTuna/letustalk/backend/infrastructure/persistence"
 	"github.com/BambooTuna/letustalk/backend/interfaces"
 	"github.com/BambooTuna/letustalk/backend/json"
+	"github.com/BambooTuna/letustalk/backend/domain"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
@@ -15,6 +16,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"github.com/payjp/payjp-go/v1"
 )
 func main() {
 
@@ -27,13 +29,15 @@ func main() {
 	)
 	db, err := sql.Open("mysql", mysqlDataSourceName)
 	dbSession := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
+	dbSession.AddTableWithName(domain.InvoiceDetail{}, "invoice_detail").SetKeys(false, "invoice_id")
 	defer dbSession.Db.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	
+	pay := payjp.New("sk_test_140a9e4c676a5befdf04206e", nil)
 	invoiceDetailRepository := persistence.InvoiceDetailRepositoryImpl{DBSession:dbSession}
-	invoiceDetailUseCase := application.InvoiceDetailUseCase{InvoiceDetailRepository:invoiceDetailRepository}
+	invoiceDetailUseCase := application.InvoiceDetailUseCase{InvoiceDetailRepository:invoiceDetailRepository,PaymentService:pay}
 	invoiceDetailHandler := interfaces.InvoiceDetailHandler{InvoiceDetailUseCase:invoiceDetailUseCase}
 
 	apiVersion := "/v1"
@@ -43,10 +47,10 @@ func main() {
 
 	api := r.Group(apiVersion)
 
-	api.GET("/invoice/:invoiceId", invoiceDetailHandler.UnimplementedRoute())
-	api.POST("/invoice", invoiceDetailHandler.UnimplementedRoute())
+	api.GET("/invoice/:invoiceId", invoiceDetailHandler.GetInvoiceDetailRoute("invoiceId"))
+	api.POST("/invoice", invoiceDetailHandler.IssueAnInvoiceRoute())
 
-	api.POST("/pay/:invoiceId", invoiceDetailHandler.UnimplementedRoute())
+	api.POST("/pay/:invoiceId", invoiceDetailHandler.MakePaymentRoute("invoiceId"))
 
 	api.GET("/health", UnimplementedRoute)
 

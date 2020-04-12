@@ -45,9 +45,9 @@ export default class TestPayment extends Vue {
 
     tokenCreatedEvent (token: string) {
       this.api
-        .pay(this.$route.params.invoiceId, token)
+        .makePayment(this.$route.params.invoiceId, token)
         // eslint-disable-next-line no-return-assign
-        .finally(() => this.state = 'complete')
+        .then(() => this.state = 'complete')
     }
 
     tokenFailedEvent (message: string) {

@@ -16,7 +16,18 @@ export default class PaymentAPI {
       // .catch(this.errorHandler)
   }
 
-  pay (invoiceId: string, token: string): Promise<InvoiceDetail> {
+  issueAnInvoice (amount: number): Promise<InvoiceDetail> {
+    return axios({
+      url: this.endpoint + '/invoice',
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      data: { amount: amount }
+    })
+      .then((res: AxiosResponse) => res.data)
+      .catch(this.errorHandler)
+  }
+
+  makePayment (invoiceId: string, token: string): Promise<InvoiceDetail> {
     return axios({
       url: this.endpoint + '/pay/' + invoiceId,
       method: 'post',

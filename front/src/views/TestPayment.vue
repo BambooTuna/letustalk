@@ -1,17 +1,17 @@
 <template>
   <div class="test-payment">
-    <div v-if="state === 'unpaid'">
-      <div v-if="invoiceDetail !== undefined">
+    <div v-show="state === 'unpaid'">
+      <WaitLoading :loadingFlag="loadingFlag">
         <p>支払い金額: {{invoiceDetail.amount}}</p>
         <PaymentCheckoutForm :public-key="paymentPublicKey" @token-created-event="tokenCreatedEvent" @token-failed-event="tokenFailedEvent"></PaymentCheckoutForm>
-      </div>
-      <div v-if="invoiceDetail === undefined">
-        <p>ロード中</p>
-      </div>
+      </WaitLoading>
     </div>
-    <div v-if="state === 'complete'">
+    <div v-show="state === 'complete'">
       <p>支払い金額: {{invoiceDetail.amount}}</p>
       <p>支払い完了</p>
+    </div>
+    <div v-show="state === 'error'">
+      <p>エラーが起きました</p>
     </div>
   </div>
 </template>
@@ -19,28 +19,35 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import PaymentCheckoutForm from '@/components/PaymentCheckoutForm.vue'
+import WaitLoading from '@/components/WaitLoading.vue'
 import PaymentAPI from '@/lib/PaymentAPI'
 import { InvoiceDetail, PaymentState } from '@/lib/Protocol'
 
 @Component({
   components: {
-    PaymentCheckoutForm
+    PaymentCheckoutForm, WaitLoading
   }
 })
 export default class TestPayment extends Vue {
     private api: PaymentAPI = new PaymentAPI()
     private paymentPublicKey: string = process.env.VUE_APP_PAYMENT_PUB_KEY
-
     private invoiceDetail?: InvoiceDetail = {
       invoiceId: '',
-      amount: 100,
+      amount: 0,
       paid: false
     }
 
+    private loadingFlag = true
     private state: PaymentState = 'unpaid'
 
     async created () {
-      this.invoiceDetail = await this.api.getInvoiceDetail(this.$route.params.invoiceId)
+      this.api.getInvoiceDetail(this.$route.params.invoiceId)
+      // eslint-disable-next-line no-return-assign
+        .then((res) => this.invoiceDetail = res)
+      // eslint-disable-next-line no-return-assign
+        .catch(() => this.state = 'error')
+        // eslint-disable-next-line no-return-assign
+        .finally(() => this.loadingFlag = false)
     }
 
     tokenCreatedEvent (token: string) {
@@ -48,6 +55,8 @@ export default class TestPayment extends Vue {
         .makePayment(this.$route.params.invoiceId, token)
         // eslint-disable-next-line no-return-assign
         .then(() => this.state = 'complete')
+        // eslint-disable-next-line no-return-assign
+        .catch(() => this.state = 'error')
     }
 
     tokenFailedEvent (message: string) {

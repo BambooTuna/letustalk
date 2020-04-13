@@ -1,7 +1,7 @@
-
-export type MentorDetail = {
-  mentorId: string;
+export type AccountDetail = {
+  accountId: string;
   name: string;
+  introduction: string;
 }
 
 export type InvoiceDetail = {
@@ -11,7 +11,6 @@ export type InvoiceDetail = {
 }
 
 export type PaymentState = 'unpaid' | 'processing' | 'complete' | 'error'
-
 
 export type ErrorResponseJson = {
   message: string;

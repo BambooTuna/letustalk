@@ -5,19 +5,20 @@ import (
 	"fmt"
 	"github.com/BambooTuna/letustalk/backend/application"
 	"github.com/BambooTuna/letustalk/backend/config"
+	"github.com/BambooTuna/letustalk/backend/domain"
 	"github.com/BambooTuna/letustalk/backend/infrastructure/persistence"
 	"github.com/BambooTuna/letustalk/backend/interfaces"
-	"github.com/BambooTuna/letustalk/backend/json"
-	"github.com/BambooTuna/letustalk/backend/domain"
+	"github.com/BambooTuna/letustalk/backend/interfaces/json"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/payjp/payjp-go/v1"
 	"gopkg.in/gorp.v1"
 	"log"
 	"net/http"
 	"os"
-	"github.com/payjp/payjp-go/v1"
 )
+
 func main() {
 
 	mysqlDataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
@@ -29,16 +30,22 @@ func main() {
 	)
 	db, err := sql.Open("mysql", mysqlDataSourceName)
 	dbSession := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
+	dbSession.AddTableWithName(domain.AccountDetail{}, "account_detail").SetKeys(false, "account_id")
 	dbSession.AddTableWithName(domain.InvoiceDetail{}, "invoice_detail").SetKeys(false, "invoice_id")
 	defer dbSession.Db.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	pay := payjp.New("sk_test_140a9e4c676a5befdf04206e", nil)
-	invoiceDetailRepository := persistence.InvoiceDetailRepositoryImpl{DBSession:dbSession}
-	invoiceDetailUseCase := application.InvoiceDetailUseCase{InvoiceDetailRepository:invoiceDetailRepository,PaymentService:pay}
-	invoiceDetailHandler := interfaces.InvoiceDetailHandler{InvoiceDetailUseCase:invoiceDetailUseCase}
+	accountDetailRepository := persistence.AccountDetailRepositoryImpl{DBSession: dbSession}
+	invoiceDetailRepository := persistence.InvoiceDetailRepositoryImpl{DBSession: dbSession}
+
+	accountDetailUseCase := application.AccountDetailUseCase{AccountDetailRepository: accountDetailRepository}
+	invoiceDetailUseCase := application.InvoiceDetailUseCase{InvoiceDetailRepository: invoiceDetailRepository, PaymentService: pay}
+
+	accountDetailHandler := interfaces.AccountDetailHandler{AccountDetailUseCase: accountDetailUseCase}
+	invoiceDetailHandler := interfaces.InvoiceDetailHandler{InvoiceDetailUseCase: invoiceDetailUseCase}
 
 	apiVersion := "/v1"
 
@@ -46,6 +53,9 @@ func main() {
 	r.Use(static.Serve("/", static.LocalFile("./front/dist", false)))
 
 	api := r.Group(apiVersion)
+
+	api.GET("/mentor", accountDetailHandler.GetAllMentorRoute())
+	api.GET("/account/:accountId", accountDetailHandler.GetAccountDetailRoute("accountId"))
 
 	api.GET("/invoice/:invoiceId", invoiceDetailHandler.GetInvoiceDetailRoute("invoiceId"))
 	api.POST("/invoice", invoiceDetailHandler.IssueAnInvoiceRoute())

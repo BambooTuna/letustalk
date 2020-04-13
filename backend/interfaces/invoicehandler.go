@@ -2,7 +2,7 @@ package interfaces
 
 import (
 	"github.com/BambooTuna/letustalk/backend/application"
-	"github.com/BambooTuna/letustalk/backend/json"
+	"github.com/BambooTuna/letustalk/backend/interfaces/json"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

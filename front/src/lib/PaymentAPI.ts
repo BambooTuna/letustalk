@@ -1,10 +1,19 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
-import { ErrorResponseJson, InvoiceDetail } from '@/lib/Protocol'
+import { AccountDetail, ErrorResponseJson, InvoiceDetail } from '@/lib/Protocol'
 
 export default class PaymentAPI {
   private endpoint!: string
   constructor (endpoint = process.env.VUE_APP_SERVER_ENDPOINT) {
     this.endpoint = endpoint
+  }
+
+  getAllMentor (): Promise<Array<AccountDetail>> {
+    return axios({
+      url: this.endpoint + '/mentor',
+      method: 'get'
+    })
+      .then((res: AxiosResponse) => res.data)
+    // .catch(this.errorHandler)
   }
 
   getInvoiceDetail (invoiceId: string): Promise<InvoiceDetail> {

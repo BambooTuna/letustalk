@@ -10,7 +10,8 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import MentorTable from '@/components/MentorTable.vue'
-import { MentorDetail } from '@/lib/Protocol'
+import { AccountDetail } from '@/lib/Protocol'
+import PaymentAPI from '@/lib/PaymentAPI'
 
 @Component({
   components: {
@@ -18,30 +19,10 @@ import { MentorDetail } from '@/lib/Protocol'
   }
 })
 export default class MyPage extends Vue {
-    private items: Array<MentorDetail> = []
-    created (): void {
-      this.items = [
-        {
-          mentorId: '1',
-          name: 'A'
-        },
-        {
-          mentorId: '2',
-          name: 'B'
-        },
-        {
-          mentorId: '3',
-          name: 'C'
-        },
-        {
-          mentorId: '4',
-          name: 'D'
-        },
-        {
-          mentorId: '5',
-          name: 'E'
-        }
-      ]
+    private api: PaymentAPI = new PaymentAPI()
+    private items: Array<AccountDetail> = []
+    async created () {
+      this.items = await this.api.getAllMentor()
     }
 }
 </script>

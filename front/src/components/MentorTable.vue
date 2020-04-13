@@ -2,7 +2,8 @@
   <div class="home">
     <ul>
       <li v-for="row in items" :key="row.mentorId">
-        <p><router-link :to=" '/mentor/' + row.mentorId + '/calendar'">{{row.name}}</router-link></p>
+        <h2><router-link :to=" '/mentor/' + row.mentorId + '/calendar'">{{row.name}}</router-link></h2>
+        <p>{{row.introduction}}</p>
       </li>
     </ul>
   </div>
@@ -10,12 +11,12 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import { MentorDetail } from '@/lib/Protocol'
+import { AccountDetail } from '@/lib/Protocol'
 
 @Component
 export default class MentorTable extends Vue {
     @Prop()
-    private items!: Array<MentorDetail>
+    private items!: Array<AccountDetail>
 }
 
 </script>

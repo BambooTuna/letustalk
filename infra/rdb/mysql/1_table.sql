@@ -18,7 +18,12 @@ CREATE TABLE `account_credentials` (
     PRIMARY KEY (`account_id`),
     UNIQUE KEY (`mail`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-INSERT INTO `account_credentials` (`account_id`, `mail`, `password`) VALUES ("f0c28384-3aa4-3f87-9fba-66a0aa62c504", "bambootuna@gmail.com", "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1");
+INSERT INTO `account_credentials` (`account_id`, `mail`, `password`, `position`) VALUES
+("1", "1@gmail.com", "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1", "mentor"),
+("2", "2@gmail.com", "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1", "mentor"),
+("3", "3@gmail.com", "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1", "mentor"),
+("4", "4@gmail.com", "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1", "mentor"),
+("5", "5@gmail.com", "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1", "mentor");
 
 CREATE TABLE `account_detail` (
     `account_id` VARCHAR(255) NOT NULL,
@@ -27,7 +32,12 @@ CREATE TABLE `account_detail` (
     PRIMARY KEY (`account_id`),
     FOREIGN KEY(`account_id`) REFERENCES `account_credentials`(`account_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-INSERT INTO `account_detail` (`account_id`, `name`, `introduction`) VALUES ("f0c28384-3aa4-3f87-9fba-66a0aa62c504", "たけちゃ", "自称エンジニア");
+INSERT INTO `account_detail` (`account_id`, `name`, `introduction`) VALUES
+("1", "A", "Aの自己紹介"),
+("2", "B", "Bの自己紹介"),
+("3", "C", "Cの自己紹介"),
+("4", "D", "Dの自己紹介"),
+("5", "E", "Eの自己紹介");
 
 
 CREATE TABLE `reservation` (

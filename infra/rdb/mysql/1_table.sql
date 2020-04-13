@@ -39,7 +39,6 @@ INSERT INTO `account_detail` (`account_id`, `name`, `introduction`) VALUES
 ("4", "D", "Dの自己紹介"),
 ("5", "E", "Eの自己紹介");
 
-
 CREATE TABLE `reservation` (
     `reservation_id` VARCHAR(255) NOT NULL,
     `child_account_id` VARCHAR(255) NOT NULL,
@@ -48,7 +47,7 @@ CREATE TABLE `reservation` (
     FOREIGN KEY(`child_account_id`) REFERENCES `account_credentials`(`account_id`),
     FOREIGN KEY(`invoice_id`) REFERENCES `invoice_detail`(`invoice_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-INSERT INTO `reservation` (`reservation_id`, `child_account_id`, `invoice_id`) VALUES ("1", "f0c28384-3aa4-3f87-9fba-66a0aa62c504", "f0c28384-3aa4-3f87-9fba-66a0aa62c504");
+INSERT INTO `reservation` (`reservation_id`, `child_account_id`, `invoice_id`) VALUES ("1", "2", "f0c28384-3aa4-3f87-9fba-66a0aa62c504");
 
 CREATE TABLE `schedule` (
     `schedule_id` VARCHAR(255) NOT NULL,
@@ -60,7 +59,7 @@ CREATE TABLE `schedule` (
     FOREIGN KEY(`parent_account_id`) REFERENCES `account_credentials`(`account_id`),
     FOREIGN KEY(`reservation_id`) REFERENCES `reservation`(`reservation_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-INSERT INTO `schedule` (`schedule_id`, `parent_account_id`, `from`, `to`, `reservation_id`) VALUES ("1", "f0c28384-3aa4-3f87-9fba-66a0aa62c504", "2020-04-20 00:00:00", "2020-04-20 00:30:00", "1");
+INSERT INTO `schedule` (`schedule_id`, `parent_account_id`, `from`, `to`, `reservation_id`) VALUES ("1", "1", "2020-04-20 00:00:00", "2020-04-20 00:30:00", "1");
 
 CREATE TABLE `schedule_detail` (
     `schedule_id` VARCHAR(255) NOT NULL,

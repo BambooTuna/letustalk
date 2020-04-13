@@ -1,8 +1,8 @@
 <template>
   <div class="home">
     <ul>
-      <li v-for="row in items" :key="row.mentorId">
-        <h2><router-link :to=" '/mentor/' + row.mentorId + '/calendar'">{{row.name}}</router-link></h2>
+      <li v-for="row in items" :key="row.accountId">
+        <h2><router-link :to=" '/mentor/' + row.accountId + '/calendar'">{{row.name}}</router-link></h2>
         <p>{{row.introduction}}</p>
       </li>
     </ul>

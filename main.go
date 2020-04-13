@@ -5,19 +5,20 @@ import (
 	"fmt"
 	"github.com/BambooTuna/letustalk/backend/application"
 	"github.com/BambooTuna/letustalk/backend/config"
+	"github.com/BambooTuna/letustalk/backend/domain"
 	"github.com/BambooTuna/letustalk/backend/infrastructure/persistence"
 	"github.com/BambooTuna/letustalk/backend/interfaces"
-	"github.com/BambooTuna/letustalk/backend/json"
-	"github.com/BambooTuna/letustalk/backend/domain"
+	"github.com/BambooTuna/letustalk/backend/interfaces/json"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/payjp/payjp-go/v1"
 	"gopkg.in/gorp.v1"
 	"log"
 	"net/http"
 	"os"
-	"github.com/payjp/payjp-go/v1"
 )
+
 func main() {
 
 	mysqlDataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
@@ -34,11 +35,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	pay := payjp.New("sk_test_140a9e4c676a5befdf04206e", nil)
-	invoiceDetailRepository := persistence.InvoiceDetailRepositoryImpl{DBSession:dbSession}
-	invoiceDetailUseCase := application.InvoiceDetailUseCase{InvoiceDetailRepository:invoiceDetailRepository,PaymentService:pay}
-	invoiceDetailHandler := interfaces.InvoiceDetailHandler{InvoiceDetailUseCase:invoiceDetailUseCase}
+	invoiceDetailRepository := persistence.InvoiceDetailRepositoryImpl{DBSession: dbSession}
+	invoiceDetailUseCase := application.InvoiceDetailUseCase{InvoiceDetailRepository: invoiceDetailRepository, PaymentService: pay}
+	invoiceDetailHandler := interfaces.InvoiceDetailHandler{InvoiceDetailUseCase: invoiceDetailUseCase}
 
 	apiVersion := "/v1"
 

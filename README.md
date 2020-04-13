@@ -6,3 +6,7 @@ $ curl -X POST -H "Content-Type: application/json" -d '{"amount":1000}' localhos
 
 $ curl -X POST -H "Content-Type: application/json" -d '{"token":""}' -i localhost:8080/v1/pay/:invoiceId
 ```
+
+
+## Wiki
+https://github.com/BambooTuna/letustalk/wiki

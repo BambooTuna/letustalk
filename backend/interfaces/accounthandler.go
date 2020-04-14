@@ -13,7 +13,7 @@ type AccountDetailHandler struct {
 	AccountDetailUseCase application.AccountDetailUseCase
 }
 
-func (a AccountDetailHandler) GetAllRoute() func(ctx *gin.Context) {
+func (a AccountDetailHandler) GetAccountDetailsRoute() func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		page, e1 := strconv.ParseInt(ctx.DefaultQuery("page", "1"), 10, 64)
 		limit, e2 := strconv.ParseInt(ctx.DefaultQuery("limit", "10"), 10, 64)
@@ -22,11 +22,11 @@ func (a AccountDetailHandler) GetAllRoute() func(ctx *gin.Context) {
 			return
 		}
 		quantityLimit := config.QuantityLimit{Page: page, Limit: limit}
-		ctx.JSON(http.StatusOK, json.ConvertToAccountDetailsResponseJson(a.AccountDetailUseCase.GetAll(quantityLimit)))
+		ctx.JSON(http.StatusOK, a.AccountDetailUseCase.GetAccountDetails(quantityLimit))
 	}
 }
 
-func (a AccountDetailHandler) GetAllMentorRoute() func(ctx *gin.Context) {
+func (a AccountDetailHandler) GetMentorAccountDetailsRoute() func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		page, e1 := strconv.ParseInt(ctx.DefaultQuery("page", "1"), 10, 64)
 		limit, e2 := strconv.ParseInt(ctx.DefaultQuery("limit", "10"), 10, 64)
@@ -35,7 +35,7 @@ func (a AccountDetailHandler) GetAllMentorRoute() func(ctx *gin.Context) {
 			return
 		}
 		quantityLimit := config.QuantityLimit{Page: page, Limit: limit}
-		ctx.JSON(http.StatusOK, json.ConvertToAccountDetailsResponseJson(a.AccountDetailUseCase.GetAllMentor(quantityLimit)))
+		ctx.JSON(http.StatusOK, a.AccountDetailUseCase.GetMentorAccountDetails(quantityLimit))
 	}
 }
 
@@ -45,7 +45,7 @@ func (a AccountDetailHandler) GetAccountDetailRoute(paramKey string) func(ctx *g
 		if accountDetail, err := a.AccountDetailUseCase.GetAccountDetail(accountId); err != nil {
 			ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: err.Error()})
 		} else {
-			ctx.JSON(http.StatusOK, json.ConvertToAccountDetailResponseJson(accountDetail))
+			ctx.JSON(http.StatusOK, accountDetail)
 		}
 	}
 }

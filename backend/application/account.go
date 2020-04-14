@@ -10,11 +10,11 @@ type AccountDetailUseCase struct {
 	AccountDetailRepository repository.AccountDetailRepository
 }
 
-func (a AccountDetailUseCase) GetAll(q config.QuantityLimit) []*domain.AccountDetail {
+func (a AccountDetailUseCase) GetAccountDetails(q config.QuantityLimit) []*domain.AccountDetail {
 	return a.AccountDetailRepository.All(q)
 }
 
-func (a AccountDetailUseCase) GetAllMentor(q config.QuantityLimit) []*domain.AccountDetail {
+func (a AccountDetailUseCase) GetMentorAccountDetails(q config.QuantityLimit) []*domain.AccountDetail {
 	return a.AccountDetailRepository.AllMentor(q)
 }
 

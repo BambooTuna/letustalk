@@ -17,3 +17,8 @@ $ curl -X GET localhost:8080/v1/mentor -i
 
 ## Wiki
 https://github.com/BambooTuna/letustalk/wiki
+
+## Go Test
+```bash
+$ go test ./... -v
+```

@@ -54,7 +54,7 @@ func main() {
 
 	api := r.Group(apiVersion)
 
-	api.GET("/mentor", accountDetailHandler.GetAllMentorRoute())
+	api.GET("/mentor", accountDetailHandler.GetMentorAccountDetailsRoute())
 	api.GET("/account/:accountId", accountDetailHandler.GetAccountDetailRoute("accountId"))
 
 	api.GET("/invoice/:invoiceId", invoiceDetailHandler.GetInvoiceDetailRoute("invoiceId"))

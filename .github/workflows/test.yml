@@ -6,8 +6,8 @@ on:
 
 jobs:
 
-  build:
-    name: Build
+  test:
+    name: go test
     runs-on: ubuntu-latest
     steps:
     - name: Check out code into the Go module directory

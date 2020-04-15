@@ -11,7 +11,7 @@
 import { Vue, Component } from 'vue-property-decorator'
 import MentorTable from '@/components/MentorTable.vue'
 import { AccountDetail } from '@/lib/Protocol'
-import PaymentAPI from '@/lib/PaymentAPI'
+import RestAPI from '@/lib/RestAPI'
 
 @Component({
   components: {
@@ -19,7 +19,7 @@ import PaymentAPI from '@/lib/PaymentAPI'
   }
 })
 export default class MyPage extends Vue {
-    private api: PaymentAPI = new PaymentAPI()
+    private api: RestAPI = new RestAPI()
     private items: Array<AccountDetail> = []
     async created () {
       this.items = await this.api.getAllMentor()

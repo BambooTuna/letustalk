@@ -17,11 +17,12 @@ type InvoiceRecord struct {
 }
 
 func (i InvoiceRepositoryImpl) Insert(record *domain.Invoice) error {
-	return i.DBSession.Insert(&InvoiceRecord{
+	invoiceRecord := InvoiceRecord{
 		InvoiceId: record.InvoiceId,
 		Amount:    record.Amount,
 		Paid:      record.Paid,
-	})
+	}
+	return i.DBSession.Insert(invoiceRecord)
 }
 
 func (i InvoiceRepositoryImpl) Update(record *domain.Invoice) error {

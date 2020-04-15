@@ -14,6 +14,11 @@ $ curl -X POST -H "Content-Type: application/json" -d '{"token":""}' -i localhos
 $ curl -X GET localhost:8080/v1/mentor -i
 ```
 
+## スケジュール
+
+```bash
+$ curl -X GET "localhost:8080/v1/account/1/calendar?from=20200420000000&to=20200420030000"
+```
 
 ## Wiki
 https://github.com/BambooTuna/letustalk/wiki

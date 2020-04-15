@@ -30,9 +30,11 @@ func main() {
 
 	accountDetailUseCase := application.AccountDetailUseCase{AccountDetailRepository: accountDetailRepository}
 	invoiceDetailUseCase := application.InvoiceUseCase{InvoiceRepository: invoiceDetailRepository, PaymentService: pay}
+	scheduleUseCase := application.ScheduleUseCase{ScheduleRepository: scheduleRepository}
 
 	accountDetailHandler := interfaces.AccountDetailHandler{AccountDetailUseCase: accountDetailUseCase}
 	invoiceDetailHandler := interfaces.InvoiceHandler{InvoiceUseCase: invoiceDetailUseCase}
+	scheduleHandler := interfaces.ScheduleHandler{ScheduleUseCase: scheduleUseCase}
 
 	apiVersion := "/v1"
 
@@ -43,6 +45,8 @@ func main() {
 
 	api.GET("/mentor", accountDetailHandler.GetMentorAccountDetailsRoute())
 	api.GET("/account/:accountId", accountDetailHandler.GetAccountDetailRoute("accountId"))
+
+	api.GET("/account/:accountId/calendar", scheduleHandler.GetFreeScheduleRoute("accountId"))
 
 	api.GET("/invoice/:invoiceId", invoiceDetailHandler.GetInvoiceRoute("invoiceId"))
 	api.POST("/invoice", invoiceDetailHandler.IssueAnInvoiceRoute())

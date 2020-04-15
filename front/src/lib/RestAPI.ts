@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { AccountDetail, ErrorResponseJson, InvoiceDetail } from '@/lib/Protocol'
 
-export default class PaymentAPI {
+export default class RestAPI {
   private endpoint!: string
   constructor (endpoint = process.env.VUE_APP_SERVER_ENDPOINT) {
     this.endpoint = endpoint

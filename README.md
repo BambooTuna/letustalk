@@ -17,7 +17,7 @@ $ curl -X GET localhost:8080/v1/mentor -i
 ## スケジュール
 
 ```bash
-$ curl -X GET "localhost:8080/v1/account/1/calendar?from=20200420000000&to=20200420030000"
+$ curl -X GET "localhost:8080/v1/account/1/schedule?from=20200420000000&to=20200420030000"
 ```
 
 ## Wiki

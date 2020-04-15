@@ -46,7 +46,7 @@ func main() {
 	api.GET("/mentor", accountDetailHandler.GetMentorAccountDetailsRoute())
 	api.GET("/account/:accountId", accountDetailHandler.GetAccountDetailRoute("accountId"))
 
-	api.GET("/account/:accountId/calendar", scheduleHandler.GetFreeScheduleRoute("accountId"))
+	api.GET("/account/:accountId/schedule", scheduleHandler.GetFreeScheduleRoute("accountId"))
 
 	api.GET("/invoice/:invoiceId", invoiceDetailHandler.GetInvoiceRoute("invoiceId"))
 	api.POST("/invoice", invoiceDetailHandler.IssueAnInvoiceRoute())

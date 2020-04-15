@@ -5,18 +5,18 @@ import (
 	"github.com/go-playground/validator"
 )
 
-type InvoiceDetail struct {
+type Invoice struct {
 	InvoiceId string `json:"invoiceId" db:"invoice_id"`
 	Amount    int    `json:"amount" db:"amount" validate:"gte=0"`
 	Paid      bool   `json:"paid" db:"paid"`
 }
 
-func GenerateInvoiceDetail(amount int) (*InvoiceDetail, error) {
+func GenerateInvoice(amount int) (*Invoice, error) {
 	uuid, err := config.GenerateUUID()
 	if err != nil {
 		return nil, err
 	}
-	details := InvoiceDetail{
+	details := Invoice{
 		InvoiceId: uuid,
 		Amount:    amount,
 		Paid:      false,
@@ -27,12 +27,12 @@ func GenerateInvoiceDetail(amount int) (*InvoiceDetail, error) {
 	return &details, nil
 }
 
-func (i *InvoiceDetail) ChangePaidState(v bool) *InvoiceDetail {
+func (i *Invoice) ChangePaidState(v bool) *Invoice {
 	i.Paid = v
 	return i
 }
 
-func (i *InvoiceDetail) Validate() error {
+func (i *Invoice) Validate() error {
 	validate := validator.New()
 	var errorMessages []config.CustomError
 	if err := validate.Struct(i); err != nil {

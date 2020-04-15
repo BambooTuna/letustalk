@@ -5,7 +5,7 @@ import "github.com/BambooTuna/letustalk/backend/config"
 type Reservation struct {
 	ReservationId  string
 	ChildAccountId string
-	Invoice        *Invoice
+	Invoice        Invoice
 }
 
 func GenerateReservation(childAccountId string, amount int) (*Reservation, error) {
@@ -19,7 +19,7 @@ func GenerateReservation(childAccountId string, amount int) (*Reservation, error
 		reservation := Reservation{
 			ReservationId:  uuid,
 			ChildAccountId: childAccountId,
-			Invoice:        invoice,
+			Invoice:        *invoice,
 		}
 		return &reservation, nil
 	}

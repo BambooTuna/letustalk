@@ -2,17 +2,21 @@ package persistence
 
 import (
 	"github.com/BambooTuna/letustalk/backend/domain"
-	"gopkg.in/gorp.v1"
+	"github.com/jinzhu/gorm"
 )
 
 type ReservationRepositoryImpl struct {
-	DBSession *gorp.DbMap
+	DBSession *gorm.DB
 }
 
 type ReservationRecord struct {
-	ReservationId  string `db:"reservation_id"`
-	ChildAccountId string `db:"child_account_id"`
-	InvoiceId      string `db:"invoice_id"`
+	ReservationId  string
+	ChildAccountId string
+	InvoiceId      string
+}
+
+func (ReservationRecord) TableName() string {
+	return "reservation"
 }
 
 func (r ReservationRepositoryImpl) Insert(record *domain.Reservation) error {
@@ -21,7 +25,7 @@ func (r ReservationRepositoryImpl) Insert(record *domain.Reservation) error {
 		ChildAccountId: record.ChildAccountId,
 		InvoiceId:      record.Invoice.InvoiceId,
 	}
-	return r.DBSession.Insert(reservationRecord)
+	return r.DBSession.Create(&reservationRecord).Error
 }
 
 //func (r ReservationRepositoryImpl) ResolveByReservationId(reservationId string) (*domain.Reservation, error) {

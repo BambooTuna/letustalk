@@ -1,11 +1,10 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"github.com/BambooTuna/letustalk/backend/application"
-	"github.com/BambooTuna/letustalk/backend/config"
 	"github.com/BambooTuna/letustalk/backend/domain"
+	"github.com/BambooTuna/letustalk/backend/infrastructure"
 	"github.com/BambooTuna/letustalk/backend/infrastructure/persistence"
 	"github.com/BambooTuna/letustalk/backend/interfaces"
 	"github.com/BambooTuna/letustalk/backend/interfaces/json"
@@ -13,33 +12,21 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/payjp/payjp-go/v1"
-	"gopkg.in/gorp.v1"
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 func main() {
 
-	mysqlDataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
-		config.FetchEnvValue("MYSQL_USER", "BambooTuna"),
-		config.FetchEnvValue("MYSQL_PASS", "pass"),
-		config.FetchEnvValue("MYSQL_HOST", "127.0.0.1"),
-		config.FetchEnvValue("MYSQL_PORT", "3306"),
-		config.FetchEnvValue("MYSQL_DATABASE", "letustalk"),
-	)
-	db, err := sql.Open("mysql", mysqlDataSourceName)
-	dbSession := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
-	dbSession.AddTableWithName(domain.AccountDetail{}, "account_detail").SetKeys(false, "account_id")
-	dbSession.AddTableWithName(domain.Invoice{}, "invoice_detail").SetKeys(false, "invoice_id")
-	defer dbSession.Db.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
+	dbSession := infrastructure.GormConnect()
+	defer dbSession.Close()
 
 	pay := payjp.New("sk_test_140a9e4c676a5befdf04206e", nil)
 	accountDetailRepository := persistence.AccountDetailRepositoryImpl{DBSession: dbSession}
 	invoiceDetailRepository := persistence.InvoiceRepositoryImpl{DBSession: dbSession}
+	scheduleRepository := persistence.ScheduleRepositoryImpl{DBSession: dbSession}
 
 	accountDetailUseCase := application.AccountDetailUseCase{AccountDetailRepository: accountDetailRepository}
 	invoiceDetailUseCase := application.InvoiceUseCase{InvoiceRepository: invoiceDetailRepository, PaymentService: pay}
@@ -62,6 +49,7 @@ func main() {
 
 	api.POST("/pay/:invoiceId", invoiceDetailHandler.MakePaymentRoute("invoiceId"))
 
+	api.GET("/test", DBTestRoute(scheduleRepository.ResolveByParentAccountId("1", time.Now(), time.Now())))
 	api.GET("/health", UnimplementedRoute)
 
 	r.NoRoute(func(c *gin.Context) {
@@ -78,5 +66,12 @@ func main() {
 }
 
 func UnimplementedRoute(ctx *gin.Context) {
+
 	ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: "UnimplementedRoute"})
+}
+
+func DBTestRoute(result []*domain.Schedule) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, result)
+	}
 }

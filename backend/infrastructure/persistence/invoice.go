@@ -3,31 +3,55 @@ package persistence
 import (
 	"fmt"
 	"github.com/BambooTuna/letustalk/backend/domain"
-	"gopkg.in/gorp.v1"
+	"github.com/jinzhu/gorm"
 )
 
-type InvoiceDetailRepositoryImpl struct {
-	DBSession *gorp.DbMap
+type InvoiceRepositoryImpl struct {
+	DBSession *gorm.DB
 }
 
-func (i InvoiceDetailRepositoryImpl) Insert(record *domain.InvoiceDetail) error {
-	return i.DBSession.Insert(record)
+type InvoiceRecord struct {
+	InvoiceId string
+	Amount    int
+	Paid      bool
 }
 
-func (i InvoiceDetailRepositoryImpl) Update(record *domain.InvoiceDetail) error {
-	if _, err := i.DBSession.Update(record); err != nil {
+func (InvoiceRecord) TableName() string {
+	return "invoice_detail"
+}
+
+func (i InvoiceRepositoryImpl) Insert(record *domain.Invoice) error {
+	invoiceRecord := InvoiceRecord{
+		InvoiceId: record.InvoiceId,
+		Amount:    record.Amount,
+		Paid:      record.Paid,
+	}
+	return i.DBSession.Create(invoiceRecord).Error
+}
+
+func (i InvoiceRepositoryImpl) Update(record *domain.Invoice) error {
+	invoiceRecord := InvoiceRecord{
+		InvoiceId: record.InvoiceId,
+		Amount:    record.Amount,
+		Paid:      record.Paid,
+	}
+	if err := i.DBSession.Save(&invoiceRecord).Error; err != nil {
 		return err
 	} else {
 		return nil
 	}
 }
 
-func (i InvoiceDetailRepositoryImpl) ResolveByInvoiceId(invoiceId string) (*domain.InvoiceDetail, error) {
-	var result domain.InvoiceDetail
+func (i InvoiceRepositoryImpl) ResolveByInvoiceId(invoiceId string) (*domain.Invoice, error) {
+	var result InvoiceRecord
 	sql := fmt.Sprintf("select * from invoice_detail where invoice_id = '%s'", invoiceId)
-	if err := i.DBSession.SelectOne(&result, sql); err != nil {
+	if err := i.DBSession.Raw(sql).Scan(&result).Error; err != nil {
 		return nil, err
 	} else {
-		return &result, nil
+		return &domain.Invoice{
+			InvoiceId: result.InvoiceId,
+			Amount:    result.Amount,
+			Paid:      result.Paid,
+		}, nil
 	}
 }

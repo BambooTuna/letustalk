@@ -24,7 +24,7 @@
 import { Vue, Component } from 'vue-property-decorator'
 import PaymentCheckoutForm from '@/components/PaymentCheckoutForm.vue'
 import WaitLoading from '@/components/WaitLoading.vue'
-import PaymentAPI from '@/lib/PaymentAPI'
+import RestAPI from '@/lib/RestAPI'
 import { InvoiceDetail, PaymentState } from '@/lib/Protocol'
 
 @Component({
@@ -33,7 +33,7 @@ import { InvoiceDetail, PaymentState } from '@/lib/Protocol'
   }
 })
 export default class TestPayment extends Vue {
-    private api: PaymentAPI = new PaymentAPI()
+    private api: RestAPI = new RestAPI()
     private paymentPublicKey: string = process.env.VUE_APP_PAYMENT_PUB_KEY
     private invoiceDetail?: InvoiceDetail = {
       invoiceId: '',

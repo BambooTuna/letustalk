@@ -15,6 +15,11 @@ const routes: Array<RouteConfig> = [
     component: () => import('@/views/TestPayment.vue')
   },
   {
+    path: '/account/:accountId/calendar',
+    name: 'ScheduleCalendar',
+    component: () => import('@/views/ScheduleCalendar.vue')
+  },
+  {
     path: '*',
     name: 'NotFound',
     component: () => import('@/views/NotFound.vue')

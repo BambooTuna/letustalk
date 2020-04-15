@@ -56,10 +56,12 @@ CREATE TABLE `schedule` (
     `to` datetime NOT NULL,
     `reservation_id` VARCHAR(255),
     PRIMARY KEY (`schedule_id`),
+    UNIQUE KEY (`parent_account_id`, `from`, `to`),
     FOREIGN KEY(`parent_account_id`) REFERENCES `account_credentials`(`account_id`),
     FOREIGN KEY(`reservation_id`) REFERENCES `reservation`(`reservation_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 INSERT INTO `schedule` (`schedule_id`, `parent_account_id`, `from`, `to`, `reservation_id`) VALUES ("1", "1", "2020-04-20 00:00:00", "2020-04-20 00:30:00", "1");
+INSERT INTO `schedule` (`schedule_id`, `parent_account_id`, `from`, `to`) VALUES ("2", "1", "2020-04-22 00:00:00", "2020-04-22 00:30:00");
 
 CREATE TABLE `schedule_detail` (
     `schedule_id` VARCHAR(255) NOT NULL,
@@ -68,3 +70,4 @@ CREATE TABLE `schedule_detail` (
     FOREIGN KEY(`schedule_id`) REFERENCES `schedule`(`schedule_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 INSERT INTO `schedule_detail` (`schedule_id`, `unit_price`) VALUES ("1", 5000);
+INSERT INTO `schedule_detail` (`schedule_id`, `unit_price`) VALUES ("2", 3000);

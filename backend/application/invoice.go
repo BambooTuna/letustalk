@@ -7,44 +7,44 @@ import (
 	"github.com/payjp/payjp-go/v1"
 )
 
-type InvoiceDetailUseCase struct {
-	InvoiceDetailRepository repository.InvoiceDetailRepository
-	PaymentService          *payjp.Service
+type InvoiceUseCase struct {
+	InvoiceRepository repository.InvoiceRepository
+	PaymentService    *payjp.Service
 }
 
-func (i InvoiceDetailUseCase) GetInvoiceDetail(invoiceId string) (*domain.InvoiceDetail, error) {
-	if invoiceDetail, err := i.InvoiceDetailRepository.ResolveByInvoiceId(invoiceId); err != nil {
+func (i InvoiceUseCase) GetInvoice(invoiceId string) (*domain.Invoice, error) {
+	if invoiceDetail, err := i.InvoiceRepository.ResolveByInvoiceId(invoiceId); err != nil {
 		return nil, config.Error(config.CustomError(err.Error()))
 	} else {
 		return invoiceDetail, nil
 	}
 }
 
-func (i InvoiceDetailUseCase) IssueAnInvoice(amount int) (*domain.InvoiceDetail, error) {
-	if invoiceDetail, err := domain.GenerateInvoiceDetail(amount); err != nil {
+func (i InvoiceUseCase) IssueAnInvoice(amount int) (*domain.Invoice, error) {
+	if invoiceDetail, err := domain.GenerateInvoice(amount); err != nil {
 		return nil, err
-	} else if err := i.InvoiceDetailRepository.Insert(invoiceDetail); err != nil {
+	} else if err := i.InvoiceRepository.Insert(invoiceDetail); err != nil {
 		return nil, config.Error(config.CustomError(err.Error()))
 	} else {
 		return invoiceDetail, nil
 	}
 }
 
-func (i InvoiceDetailUseCase) MakePayment(invoiceId, token string) (*domain.InvoiceDetail, error) {
-	if invoiceDetail, err := i.InvoiceDetailRepository.ResolveByInvoiceId(invoiceId); err != nil {
+func (i InvoiceUseCase) MakePayment(invoiceId, token string) (*domain.Invoice, error) {
+	if invoiceDetail, err := i.InvoiceRepository.ResolveByInvoiceId(invoiceId); err != nil {
 		return nil, err
 	} else if invoiceDetail.Paid == true {
 		return nil, config.Error("支払いずみ")
 	} else if charge, err := i.CreatePaymentCharge(invoiceId, token, invoiceDetail.Amount); err != nil {
 		return nil, config.Error(config.CustomError(err.Error()))
-	} else if err := i.InvoiceDetailRepository.Update(invoiceDetail.ChangePaidState(charge.Captured)); err != nil {
+	} else if err := i.InvoiceRepository.Update(invoiceDetail.ChangePaidState(charge.Captured)); err != nil {
 		return nil, config.Error(config.CustomError(err.Error()))
 	} else {
 		return invoiceDetail, nil
 	}
 }
 
-func (i InvoiceDetailUseCase) CreatePaymentCharge(invoiceId, token string, amount int) (*payjp.ChargeResponse, error) {
+func (i InvoiceUseCase) CreatePaymentCharge(invoiceId, token string, amount int) (*payjp.ChargeResponse, error) {
 	return i.PaymentService.Charge.Create(amount, payjp.Charge{
 		Currency:    "jpy",
 		CardToken:   token,

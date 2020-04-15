@@ -7,7 +7,7 @@ import (
 
 type Invoice struct {
 	InvoiceId string `json:"invoiceId" db:"invoice_id"`
-	Amount    int    `json:"amount" db:"amount" validate:"gte=0"`
+	Amount    int    `json:"amount" db:"amount" validate:"gte=50"`
 	Paid      bool   `json:"paid" db:"paid"`
 }
 

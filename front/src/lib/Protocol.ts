@@ -4,6 +4,13 @@ export type AccountDetail = {
   introduction: string;
 }
 
+export type FreeSchedule = {
+  scheduleId: string;
+  from: string;
+  to: string;
+  unitPrice: number;
+}
+
 export type InvoiceDetail = {
   invoiceId: string;
   amount: number;

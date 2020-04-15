@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
-import { AccountDetail, ErrorResponseJson, InvoiceDetail } from '@/lib/Protocol'
+import { AccountDetail, ErrorResponseJson, FreeSchedule, InvoiceDetail } from '@/lib/Protocol'
 
 export default class RestAPI {
   private endpoint!: string
@@ -10,6 +10,15 @@ export default class RestAPI {
   getAllMentor (): Promise<Array<AccountDetail>> {
     return axios({
       url: this.endpoint + '/mentor',
+      method: 'get'
+    })
+      .then((res: AxiosResponse) => res.data)
+    // .catch(this.errorHandler)
+  }
+
+  getFreeSchedule (accountId: string): Promise<Array<FreeSchedule>> {
+    return axios({
+      url: this.endpoint + '/account/' + accountId + '/schedule',
       method: 'get'
     })
       .then((res: AxiosResponse) => res.data)

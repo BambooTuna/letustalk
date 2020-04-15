@@ -37,7 +37,6 @@ func TestGenerateScheduleSuccess(t *testing.T) {
 
 func TestScheduleCreateReservationSuccess(t *testing.T) {
 	scheduleDetail := ScheduleDetail{UnitPrice: 1000}
-
 	childAccountId := "test_id"
 	if schedule, err := GenerateSchedule("test", time.Date(2020, 1, 1, 0, 29, 59, 0, time.UTC), scheduleDetail); err != nil {
 		t.Fatalf("failed test (GenerateSchedule): %#v", err)
@@ -48,5 +47,14 @@ func TestScheduleCreateReservationSuccess(t *testing.T) {
 	} else if schedule.Reservation.Invoice.Amount != scheduleDetail.UnitPrice {
 		t.Fatalf("failed test (CreateReservation): Invoice#Amount not equal")
 	}
+}
 
+func TestScheduleCreateReservationFailed(t *testing.T) {
+	scheduleDetail := ScheduleDetail{UnitPrice: -1000}
+	childAccountId := "test_id"
+	if schedule, err := GenerateSchedule("test", time.Date(2020, 1, 1, 0, 29, 59, 0, time.UTC), scheduleDetail); err != nil {
+		t.Fatalf("failed test (GenerateSchedule): %#v", err)
+	} else if _, err := schedule.CreateReservation(childAccountId); err == nil {
+		t.Fatalf("failed test (CreateReservation)")
+	}
 }

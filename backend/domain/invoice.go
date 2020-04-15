@@ -6,9 +6,9 @@ import (
 )
 
 type Invoice struct {
-	InvoiceId string `json:"invoiceId" db:"invoice_id"`
-	Amount    int    `json:"amount" db:"amount" validate:"gte=50"`
-	Paid      bool   `json:"paid" db:"paid"`
+	InvoiceId string `json:"invoiceId"`
+	Amount    int    `json:"amount" validate:"gte=50"`
+	Paid      bool   `json:"paid"`
 }
 
 func GenerateInvoice(amount int) (*Invoice, error) {

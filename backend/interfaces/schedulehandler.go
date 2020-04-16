@@ -3,6 +3,7 @@ package interfaces
 import (
 	"github.com/BambooTuna/go-server-lib/session"
 	"github.com/BambooTuna/letustalk/backend/application"
+	"github.com/BambooTuna/letustalk/backend/domain"
 	"github.com/BambooTuna/letustalk/backend/interfaces/json"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -54,12 +55,13 @@ func (s ScheduleHandler) GetFreeScheduleRoute(paramKey string) func(ctx *gin.Con
 }
 
 func (s ScheduleHandler) ReserveRoute(paramKey string) func(ctx *gin.Context) {
-	return func(ctx *gin.Context) {
+	return s.Session.RequiredSession(func(ctx *gin.Context, token string) {
 		scheduleId := ctx.Param(paramKey)
-		if err := s.ScheduleUseCase.Reserve(scheduleId, "2"); err != nil {
+		accountSessionToken := domain.DecodeToAccountSessionToken(token)
+		if err := s.ScheduleUseCase.Reserve(scheduleId, accountSessionToken.AccountId); err != nil {
 			ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: err.Error()})
 		} else {
 			ctx.Status(http.StatusOK)
 		}
-	}
+	})
 }

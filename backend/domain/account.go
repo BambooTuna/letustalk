@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"encoding/json"
 	"github.com/BambooTuna/letustalk/backend/config"
 	"github.com/BambooTuna/quest-market/backend/settings"
 	"github.com/go-playground/validator"
@@ -43,4 +44,33 @@ func GenerateAccountCredentials(mail, plainPass string) (*AccountCredentials, er
 	}
 	accountCredentials.Password = encryptedPass
 	return accountCredentials, nil
+}
+
+type AccountPosition string
+
+const (
+	General AccountPosition = "general"
+	Mentor  AccountPosition = "mentor"
+)
+
+type AccountSessionToken struct {
+	AccountId string          `json:"account_id"`
+	Position  AccountPosition `json:"position"`
+}
+
+func (a AccountSessionToken) ToString() string {
+	json, err := json.Marshal(a)
+	if err != nil {
+		return ""
+	}
+	return string(json)
+}
+
+func DecodeToAccountSessionToken(s string) *AccountSessionToken {
+	var accountSessionToken *AccountSessionToken
+	err := json.Unmarshal([]byte(s), &accountSessionToken)
+	if err != nil {
+		return nil
+	}
+	return accountSessionToken
 }

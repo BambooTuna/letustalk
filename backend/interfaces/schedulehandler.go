@@ -1,6 +1,7 @@
 package interfaces
 
 import (
+	"github.com/BambooTuna/go-server-lib/session"
 	"github.com/BambooTuna/letustalk/backend/application"
 	"github.com/BambooTuna/letustalk/backend/interfaces/json"
 	"github.com/gin-gonic/gin"
@@ -9,6 +10,7 @@ import (
 )
 
 type ScheduleHandler struct {
+	Session         session.Session
 	ScheduleUseCase application.ScheduleUseCase
 }
 

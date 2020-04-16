@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/BambooTuna/go-server-lib/session"
 	"github.com/BambooTuna/letustalk/backend/application"
+	"github.com/BambooTuna/letustalk/backend/config"
 	"github.com/BambooTuna/letustalk/backend/domain"
 	"github.com/BambooTuna/letustalk/backend/infrastructure"
 	"github.com/BambooTuna/letustalk/backend/infrastructure/persistence"
@@ -20,6 +22,10 @@ import (
 
 func main() {
 
+	sessionRedisSession := infrastructure.RedisConnect(0)
+	sessionDao := session.RedisSessionStorageDao{Client: sessionRedisSession}
+	authSession := session.DefaultSession{Dao: sessionDao, Settings: session.DefaultSessionSettings(config.FetchEnvValue("SESSION_SECRET", "1234567890asdfghjkl"))}
+
 	dbSession := infrastructure.GormConnect()
 	defer dbSession.Close()
 
@@ -33,9 +39,9 @@ func main() {
 	invoiceDetailUseCase := application.InvoiceUseCase{InvoiceRepository: invoiceDetailRepository, PaymentService: pay}
 	scheduleUseCase := application.ScheduleUseCase{ScheduleRepository: scheduleRepository, ReservationRepository: reservationRepository, InvoiceRepository: invoiceDetailRepository}
 
-	accountDetailHandler := interfaces.AccountDetailHandler{AccountDetailUseCase: accountDetailUseCase}
-	invoiceDetailHandler := interfaces.InvoiceHandler{InvoiceUseCase: invoiceDetailUseCase}
-	scheduleHandler := interfaces.ScheduleHandler{ScheduleUseCase: scheduleUseCase}
+	accountDetailHandler := interfaces.AccountDetailHandler{Session: authSession, AccountDetailUseCase: accountDetailUseCase}
+	invoiceDetailHandler := interfaces.InvoiceHandler{Session: authSession, InvoiceUseCase: invoiceDetailUseCase}
+	scheduleHandler := interfaces.ScheduleHandler{Session: authSession, ScheduleUseCase: scheduleUseCase}
 
 	apiVersion := "/v1"
 

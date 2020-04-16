@@ -1,6 +1,7 @@
 package interfaces
 
 import (
+	"github.com/BambooTuna/go-server-lib/session"
 	"github.com/BambooTuna/letustalk/backend/application"
 	"github.com/BambooTuna/letustalk/backend/config"
 	"github.com/BambooTuna/letustalk/backend/interfaces/json"
@@ -10,6 +11,7 @@ import (
 )
 
 type AccountDetailHandler struct {
+	Session              session.Session
 	AccountDetailUseCase application.AccountDetailUseCase
 }
 

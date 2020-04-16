@@ -11,6 +11,16 @@ type AccountDetailRepositoryImpl struct {
 	DBSession *gorm.DB
 }
 
+type AccountDetailRecord struct {
+	AccountId    string
+	Name         string
+	Introduction string
+}
+
+func (AccountDetailRecord) TableName() string {
+	return "account_detail"
+}
+
 func (a AccountDetailRepositoryImpl) All(q config.QuantityLimit) []*domain.AccountDetail {
 	var result []*domain.AccountDetail
 	sql := fmt.Sprintf("select * from account_detail ORDER BY account_id desc Limit %d,%d", q.Drop(), q.Limit)

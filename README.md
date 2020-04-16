@@ -18,6 +18,9 @@ $ curl -X GET localhost:8080/v1/mentor -i
 
 ```bash
 $ curl -X GET "localhost:8080/v1/account/1/schedule?from=20200420000000&to=20200420030000"
+
+$ curl -X POST localhost:8080/v1/schedule/2/reserve
+
 ```
 
 ## Wiki

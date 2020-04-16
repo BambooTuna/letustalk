@@ -48,23 +48,58 @@ func (s ScheduleRepositoryImpl) UpdateSchedule(record domain.Schedule) error {
 	if record.Reservation != nil {
 		reservationId = record.Reservation.ReservationId
 	}
-	scheduleRecord := ScheduleRecord{
-		ScheduleId:      record.ScheduleId,
-		ParentAccountId: record.ParentAccountId,
-		From:            record.From,
-		To:              record.To,
-		ReservationId:   reservationId,
-	}
-	if err := s.DBSession.Save(&scheduleRecord).Error; err != nil {
+	//scheduleRecord := ScheduleRecord{
+	//	ScheduleId:      record.ScheduleId,
+	//	ParentAccountId: record.ParentAccountId,
+	//	From:            record.From,
+	//	To:              record.To,
+	//	ReservationId:   reservationId,
+	//}
+
+	d := s.DBSession.Model(&ScheduleRecord{ScheduleId: record.ScheduleId}).Where("reservation_id IS NULL").Update("reservation_id", reservationId)
+	//a := s.DBSession.Save(&scheduleRecord)
+	if err := d.Error; err != nil {
 		return err
 	} else {
 		return nil
 	}
 }
 
-//func (s ScheduleRepositoryImpl) ResolveByScheduleId(scheduleId string) (*domain.Schedule, error) {
-//	return nil, nil
-//}
+func (s ScheduleRepositoryImpl) ResolveByScheduleId(scheduleId string) (*domain.Schedule, error) {
+	type ResultRecord struct {
+		ScheduleRecord
+		ScheduleDetailRecord
+		ReservationRecord
+		InvoiceRecord
+	}
+
+	sql := fmt.Sprintf("select schedule.*, schedule_detail.*, reservation.*, invoice_detail.* from schedule join schedule_detail on schedule.schedule_id = schedule_detail.schedule_id left outer join reservation on schedule.reservation_id = reservation.reservation_id left outer join invoice_detail on reservation.invoice_id = invoice_detail.invoice_id where schedule.schedule_id = '%s'", scheduleId)
+	var result ResultRecord
+	if err := s.DBSession.Raw(sql).Scan(&result).Error; err != nil {
+		return nil, err
+	} else {
+		var reservation *domain.Reservation
+		if result.ScheduleRecord.ReservationId != "" {
+			reservation = &domain.Reservation{
+				ReservationId:  result.ReservationRecord.ReservationId,
+				ChildAccountId: result.ReservationRecord.ChildAccountId,
+				Invoice: domain.Invoice{
+					InvoiceId: result.InvoiceRecord.InvoiceId,
+					Amount:    result.InvoiceRecord.Amount,
+					Paid:      result.InvoiceRecord.Paid,
+				},
+			}
+		}
+		return &domain.Schedule{
+			ScheduleId:      result.ScheduleRecord.ScheduleId,
+			ParentAccountId: result.ScheduleRecord.ParentAccountId,
+			From:            result.ScheduleRecord.From,
+			To:              result.ScheduleRecord.To,
+			Detail:          domain.ScheduleDetail{UnitPrice: result.ScheduleDetailRecord.UnitPrice},
+			Reservation:     reservation,
+		}, nil
+	}
+}
 
 func (s ScheduleRepositoryImpl) ResolveByParentAccountId(parentAccountId string, from time.Time, to time.Time) []*domain.Schedule {
 	type ResultRecord struct {

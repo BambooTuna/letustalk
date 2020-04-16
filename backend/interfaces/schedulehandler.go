@@ -50,3 +50,14 @@ func (s ScheduleHandler) GetFreeScheduleRoute(paramKey string) func(ctx *gin.Con
 		}
 	}
 }
+
+func (s ScheduleHandler) ReserveRoute(paramKey string) func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		scheduleId := ctx.Param(paramKey)
+		if err := s.ScheduleUseCase.Reserve(scheduleId, "2"); err != nil {
+			ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: err.Error()})
+		} else {
+			ctx.Status(http.StatusOK)
+		}
+	}
+}

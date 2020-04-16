@@ -26,11 +26,12 @@ func main() {
 	pay := payjp.New("sk_test_140a9e4c676a5befdf04206e", nil)
 	accountDetailRepository := persistence.AccountDetailRepositoryImpl{DBSession: dbSession}
 	invoiceDetailRepository := persistence.InvoiceRepositoryImpl{DBSession: dbSession}
+	reservationRepository := persistence.ReservationRepositoryImpl{DBSession: dbSession}
 	scheduleRepository := persistence.ScheduleRepositoryImpl{DBSession: dbSession}
 
 	accountDetailUseCase := application.AccountDetailUseCase{AccountDetailRepository: accountDetailRepository}
 	invoiceDetailUseCase := application.InvoiceUseCase{InvoiceRepository: invoiceDetailRepository, PaymentService: pay}
-	scheduleUseCase := application.ScheduleUseCase{ScheduleRepository: scheduleRepository}
+	scheduleUseCase := application.ScheduleUseCase{ScheduleRepository: scheduleRepository, ReservationRepository: reservationRepository, InvoiceRepository: invoiceDetailRepository}
 
 	accountDetailHandler := interfaces.AccountDetailHandler{AccountDetailUseCase: accountDetailUseCase}
 	invoiceDetailHandler := interfaces.InvoiceHandler{InvoiceUseCase: invoiceDetailUseCase}
@@ -47,6 +48,8 @@ func main() {
 	api.GET("/account/:accountId", accountDetailHandler.GetAccountDetailRoute("accountId"))
 
 	api.GET("/account/:accountId/schedule", scheduleHandler.GetFreeScheduleRoute("accountId"))
+
+	api.POST("/schedule/:scheduleId/reserve", scheduleHandler.ReserveRoute("scheduleId"))
 
 	api.GET("/invoice/:invoiceId", invoiceDetailHandler.GetInvoiceRoute("invoiceId"))
 	api.POST("/invoice", invoiceDetailHandler.IssueAnInvoiceRoute())

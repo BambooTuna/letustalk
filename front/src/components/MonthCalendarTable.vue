@@ -215,7 +215,6 @@ type CalendarDates = {
   }
 
   .calender-panel_space {
-    width: 40px;
     list-style: none;
   }
 

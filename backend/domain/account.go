@@ -15,8 +15,10 @@ type AccountDetail struct {
 
 type AccountCredentials struct {
 	AccountId string
-	Mail      string `validate:"required,email"`
-	Password  string `validate:"gte=1,lt=255"`
+	Mail      string          `validate:"required,email"`
+	Password  string          `validate:"gte=1,lt=255"`
+	Position  AccountPosition `validate:"required"`
+	Activated bool
 }
 
 func GenerateAccountCredentials(mail, plainPass string) (*AccountCredentials, error) {
@@ -28,6 +30,8 @@ func GenerateAccountCredentials(mail, plainPass string) (*AccountCredentials, er
 		AccountId: uuid,
 		Mail:      mail,
 		Password:  plainPass,
+		Position:  General,
+		Activated: false,
 	}
 	validate := validator.New()
 	var errorMessages []config.CustomError
@@ -44,6 +48,16 @@ func GenerateAccountCredentials(mail, plainPass string) (*AccountCredentials, er
 	}
 	accountCredentials.Password = encryptedPass
 	return accountCredentials, nil
+}
+
+func (a *AccountCredentials) ChangePosition(newPosition AccountPosition) *AccountCredentials {
+	a.Position = newPosition
+	return a
+}
+
+func (a *AccountCredentials) Activate() *AccountCredentials {
+	a.Activated = true
+	return a
 }
 
 type AccountPosition string

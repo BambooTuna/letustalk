@@ -23,9 +23,9 @@
       </div>
       <div class="search">
         <div class="inner-box">
-          <router-link to="/" class="s-box">
+          <a href="https://forms.gle/GupmVNu3pRcNXWQS8" class="s-box">
           相談されたい人を探す
-          </router-link>
+          </a>
         </div>
       </div>
     </header>
@@ -35,7 +35,7 @@
       <p></p>
       <div class="find-therapist">
         <div class="inner-box">
-          <a href="find" class="box-inner-text">
+          <a href="https://forms.gle/GupmVNu3pRcNXWQS8" class="box-inner-text">
             あなたから相談されたい人を見つける
           </a>
         </div>

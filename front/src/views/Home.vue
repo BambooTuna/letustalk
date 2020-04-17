@@ -29,10 +29,13 @@
         </div>
       </div>
     </header>
-    <div>
-      <h2>〇〇は、相談したい人と相談されたい人を繋ぐ場所です</h2>
-      <p>誰しもが悩みを抱えています。でもそれでよくないですか？</p>
-      <p></p>
+    <div class="introduction">
+      <div class="intro-box">
+        <h2>〇〇は、相談したい人と相談されたい人を繋ぐ場所です</h2>
+        <p>誰しもが悩みを抱えています。でもそれでよくないですか？</p>
+        <p></p>
+        <img src="../assets/business-women-shaking-hands.jpg" width="500"/>
+      </div>
       <div class="find-therapist">
         <div class="inner-box">
           <a href="https://forms.gle/GupmVNu3pRcNXWQS8" class="box-inner-text">
@@ -99,6 +102,12 @@ export default class MyPage extends Vue {
   }
   header {
     display: flex;
+  }
+  .introduction {
+    display: flex;
+  }
+  .intro-box {
+    margin: auto;
   }
   .inner-text {
     margin: 10px;
@@ -190,8 +199,5 @@ export default class MyPage extends Vue {
       -webkit-transform: translate3d(-50%, -8px, 0);
       transform: translate3d(-50%, -8px, 0);
     }
-  }
-  .introduction {
-    margin-top: 300px;
   }
 </style>

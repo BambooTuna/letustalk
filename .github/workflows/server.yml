@@ -5,14 +5,12 @@ on:
     branches: [ master ]
 
 jobs:
-
-  build:
-    name: Build
+  build-deploy:
+    name: Build Deploy
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [10.16.0]
-
     steps:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
@@ -31,7 +29,6 @@ jobs:
         NODE_ENV: development
         VUE_APP_SERVER_ENDPOINT: ${{ secrets.APIEndpoint }}
         VUE_APP_PAYMENT_PUB_KEY: ${{ secrets.PaymentPublicKey }}
-
     - name: Set up Go 1.13
       uses: actions/setup-go@v1
       with:
@@ -44,7 +41,14 @@ jobs:
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
         fi
-
+    - name: Set GAE env
+      run: |
+        echo ${SECRET_ENV} | base64 -d > ./.env
+        export $(cat .env | grep -v ^# | xargs)
+        chmod +x ./extcat.sh
+        cat ./app.tpl.yml | ./extcat.sh > ./app.yml
+      env:
+        SECRET_ENV: ${{ secrets.SecretEnv }}
     - name: GAE deploy
       run: |
         sudo apt-get install google-cloud-sdk-app-engine-go

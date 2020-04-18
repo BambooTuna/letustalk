@@ -41,6 +41,9 @@ jobs:
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
         fi
+    - name: Create Swagger
+      run: |
+        swag init
     - name: Set GAE env
       run: |
         echo ${SECRET_ENV} | base64 -d > ./.env

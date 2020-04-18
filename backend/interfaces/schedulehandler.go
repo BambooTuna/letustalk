@@ -22,6 +22,15 @@ type FreeScheduleResponseJson struct {
 	UnitPrice  int       `json:"unitPrice"`
 }
 
+// GetFreeSchedule godoc
+// @Summary GetFreeSchedule
+// @Description GetFreeSchedule
+// @Param accountId path string true "accountId"
+// @Param from query string false "from"
+// @Param to query string false "to"
+// @Success 200 {array} FreeScheduleResponseJson
+// @Failure 400 {object} json.ErrorMessageJson
+// @Router /accounts/{accountId}/schedules [get]
 func (s ScheduleHandler) GetFreeScheduleRoute(paramKey string) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		accountId := ctx.Param(paramKey)
@@ -54,6 +63,15 @@ func (s ScheduleHandler) GetFreeScheduleRoute(paramKey string) func(ctx *gin.Con
 	}
 }
 
+// Reserve godoc
+// @Summary Reserve
+// @Description Reserve
+// @Param scheduleId path string true "scheduleId"
+// @Param authorization header string true "authorization header"
+// @Success 200
+// @Failure 400 {object} json.ErrorMessageJson
+// @Failure 403
+// @Router /reservations/{scheduleId} [post]
 func (s ScheduleHandler) ReserveRoute(paramKey string) func(ctx *gin.Context) {
 	return s.Session.RequiredSession(func(ctx *gin.Context, token string) {
 		scheduleId := ctx.Param(paramKey)

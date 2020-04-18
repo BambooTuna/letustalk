@@ -2,6 +2,13 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
+
+	"github.com/BambooTuna/letustalk/docs"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
+
 	"github.com/BambooTuna/go-server-lib/authentication"
 	"github.com/BambooTuna/go-server-lib/session"
 	"github.com/BambooTuna/letustalk/backend/application"
@@ -10,16 +17,11 @@ import (
 	"github.com/BambooTuna/letustalk/backend/infrastructure/persistence"
 	"github.com/BambooTuna/letustalk/backend/interfaces"
 	"github.com/BambooTuna/letustalk/backend/interfaces/json"
-	"github.com/BambooTuna/letustalk/docs"
 	_ "github.com/BambooTuna/letustalk/docs"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/payjp/payjp-go/v1"
-	ginSwagger "github.com/swaggo/gin-swagger"
-	"github.com/swaggo/gin-swagger/swaggerFiles"
-	"log"
-	"net/http"
 )
 
 // @title Swagger Letustalk API
@@ -100,14 +102,15 @@ func main() {
 
 	api.GET("/health", UnimplementedRoute)
 
-	docs.SwaggerInfo.Schemes = []string{config.FetchEnvValue("SWAGGER_SCHEMES", "http")}
-	docs.SwaggerInfo.Host = config.FetchEnvValue("SWAGGER_HOST", fmt.Sprintf("localhost:%s", port))
-	docs.SwaggerInfo.BasePath = apiVersion
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	if gin.Mode() == gin.DebugMode {
+		docs.SwaggerInfo.Schemes = []string{config.FetchEnvValue("SWAGGER_SCHEMES", "http")}
+		docs.SwaggerInfo.Host = config.FetchEnvValue("SWAGGER_HOST", fmt.Sprintf("localhost:%s", port))
+		docs.SwaggerInfo.BasePath = apiVersion
+		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	}
 	r.NoRoute(func(c *gin.Context) {
 		c.File("./front/dist/index.html")
 	})
-
 	log.Fatal(r.Run(fmt.Sprintf(":%s", port)))
 }
 

@@ -19,6 +19,7 @@ vpc_access_connector:
 
 env_variables:
   PORT: 8080
+  GIN_MODE: release
   SESSION_SECRET: ${SESSION_SECRET}
   MYSQL_USER: ${MYSQL_USER}
   MYSQL_PASS: ${MYSQL_PASS}

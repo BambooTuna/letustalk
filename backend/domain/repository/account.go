@@ -7,7 +7,7 @@ import (
 
 type AccountCredentialsRepository interface {
 	Insert(record *domain.AccountCredentials) error
-	Update(record *domain.AccountCredentials) error
+	UpdateActivated(accountId string, activated bool) error
 	ResolveByMail(mail string) (*domain.AccountCredentials, error)
 	ResolveByAccountId(accountId string) (*domain.AccountCredentials, error)
 }

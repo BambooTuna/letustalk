@@ -65,6 +65,6 @@ func ActivateAccountMailerFromConfig() ActivateAccountMailer {
 		SmtpHost:                   config.FetchEnvValue("SMTP_HOST", "127.0.0.1"),
 		SmtpPort:                   config.FetchEnvValue("SMTP_PORT", "587"),
 		FromAddress:                config.FetchEnvValue("SMTP_FROM_ADDRESS", "info@example.com"),
-		ActivateAccountAPIEndpoint: config.FetchEnvValue("ACTIVATE_ACCOUNT_API_ENDPOINT", "http://localhost:8080/v1/account/activate"),
+		ActivateAccountAPIEndpoint: config.FetchEnvValue("ACTIVATE_ACCOUNT_API_ENDPOINT", "http://localhost:8080/v1/activate/account"),
 	}
 }

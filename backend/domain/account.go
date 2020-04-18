@@ -7,12 +7,6 @@ import (
 	"github.com/go-playground/validator"
 )
 
-type AccountDetail struct {
-	AccountId    string `json:"accountId"`
-	Name         string `json:"name"`
-	Introduction string `json:"introduction" validate:"gte=0,lt=1000"`
-}
-
 type AccountCredentials struct {
 	AccountId string
 	Mail      string          `validate:"required,email"`
@@ -29,25 +23,42 @@ func GenerateAccountCredentials(mail, plainPass string) (*AccountCredentials, er
 	accountCredentials := &AccountCredentials{
 		AccountId: uuid,
 		Mail:      mail,
-		Password:  plainPass,
 		Position:  General,
 		Activated: false,
 	}
+	return accountCredentials.ResetPassword(plainPass)
+}
+
+func (a *AccountCredentials) Validate() (*AccountCredentials, error) {
 	validate := validator.New()
 	var errorMessages []config.CustomError
-	if err := validate.Struct(accountCredentials); err != nil {
+	if err := validate.Struct(a); err != nil {
 		for _, err := range err.(validator.ValidationErrors) {
 			errorMessages = append(errorMessages, config.ValidateError(err.Field(), err.Tag()))
 		}
 		return nil, config.Errors(errorMessages)
 	}
+	return a, nil
+}
 
-	encryptedPass, err := config.PasswordHash(plainPass)
-	if err != nil {
-		return nil, err
+func (a AccountCredentials) Accessible(plainPass string) bool {
+	if encryptedPass, err := config.PasswordHash(plainPass); err != nil {
+		return false
+	} else {
+		return a.Password == encryptedPass
 	}
-	accountCredentials.Password = encryptedPass
-	return accountCredentials, nil
+}
+
+func (a *AccountCredentials) ResetPassword(newPassword string) (*AccountCredentials, error) {
+	a.Password = newPassword
+	if _, err := a.Validate(); err != nil {
+		return nil, err
+	} else if encryptedPass, err := config.PasswordHash(newPassword); err != nil {
+		return nil, err
+	} else {
+		a.Password = encryptedPass
+		return a, nil
+	}
 }
 
 func (a *AccountCredentials) ChangePosition(newPosition AccountPosition) *AccountCredentials {
@@ -87,4 +98,10 @@ func DecodeToAccountSessionToken(s string) *AccountSessionToken {
 		return nil
 	}
 	return accountSessionToken
+}
+
+type AccountDetail struct {
+	AccountId    string `json:"accountId"`
+	Name         string `json:"name"`
+	Introduction string `json:"introduction" validate:"gte=0,lt=1000"`
 }

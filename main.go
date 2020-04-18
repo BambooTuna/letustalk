@@ -10,6 +10,7 @@ import (
 	"github.com/BambooTuna/letustalk/backend/infrastructure/persistence"
 	"github.com/BambooTuna/letustalk/backend/interfaces"
 	"github.com/BambooTuna/letustalk/backend/interfaces/json"
+	"github.com/BambooTuna/letustalk/docs"
 	_ "github.com/BambooTuna/letustalk/docs"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
@@ -19,7 +20,6 @@ import (
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 	"log"
 	"net/http"
-	"os"
 )
 
 // @title Swagger Letustalk API
@@ -33,10 +33,9 @@ import (
 
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-
-// @host localhost:8080
-// @BasePath /v1
 func main() {
+	port := config.FetchEnvValue("PORT", "8080")
+	apiVersion := "/v1"
 
 	sessionRedisSession := infrastructure.RedisConnect(0)
 	activateRedisSession := infrastructure.RedisConnect(1)
@@ -69,8 +68,6 @@ func main() {
 	invoiceDetailHandler := interfaces.InvoiceHandler{Session: authSession, InvoiceUseCase: invoiceDetailUseCase}
 	scheduleHandler := interfaces.ScheduleHandler{Session: authSession, ScheduleUseCase: scheduleUseCase}
 
-	apiVersion := "/v1"
-
 	r := gin.Default()
 	r.Use(static.Serve("/", static.LocalFile("./front/dist", false)))
 
@@ -101,16 +98,13 @@ func main() {
 
 	api.GET("/health", UnimplementedRoute)
 
+	docs.SwaggerInfo.Schemes = []string{config.FetchEnvValue("SWAGGER_SCHEMES", "http")}
+	docs.SwaggerInfo.Host = config.FetchEnvValue("SWAGGER_HOST", fmt.Sprintf("localhost:%s", port))
+	docs.SwaggerInfo.BasePath = apiVersion
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.NoRoute(func(c *gin.Context) {
 		c.File("./front/dist/index.html")
 	})
-
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-		log.Printf("Defaulting to port %s", port)
-	}
 
 	log.Fatal(r.Run(fmt.Sprintf(":%s", port)))
 }

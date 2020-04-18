@@ -62,7 +62,7 @@ func main() {
 	accountCredentialsUseCase := application.AccountCredentialsUseCase{AccountCredentialsRepository: accountCredentialsRepository, ActivatorUseCase: activatorUseCase}
 	accountDetailUseCase := application.AccountDetailUseCase{AccountDetailRepository: accountDetailRepository}
 	invoiceDetailUseCase := application.InvoiceUseCase{InvoiceRepository: invoiceDetailRepository, PaymentService: pay}
-	scheduleUseCase := application.ScheduleUseCase{ScheduleRepository: scheduleRepository, ReservationRepository: reservationRepository, InvoiceRepository: invoiceDetailRepository}
+	scheduleUseCase := application.ScheduleUseCase{AccountCredentialsRepository: accountCredentialsRepository, ScheduleRepository: scheduleRepository, ReservationRepository: reservationRepository, InvoiceRepository: invoiceDetailRepository}
 
 	accountCredentialsHandler := interfaces.AccountCredentialsHandler{Session: authSession, AccountCredentialsUseCase: accountCredentialsUseCase}
 	accountDetailHandler := interfaces.AccountDetailHandler{Session: authSession, AccountDetailUseCase: accountDetailUseCase}

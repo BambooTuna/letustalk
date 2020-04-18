@@ -13,7 +13,7 @@ type AccountCredentialsUseCase struct {
 }
 
 func (a AccountCredentialsUseCase) SignUp(mail, password string) (*domain.AccountCredentials, error) {
-	if accountCredentials, err := domain.GenerateAccountCredentials(mail, password); err != nil {
+	if accountCredentials, err := domain.NewAccountCredentials(mail, password); err != nil {
 		return nil, err
 	} else if err := a.AccountCredentialsRepository.Insert(accountCredentials); err != nil {
 		return nil, config.Error("メール使用ずみ")

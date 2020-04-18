@@ -40,7 +40,12 @@ func GenerateSchedule(parentAccountId string, startTime time.Time, detail Schedu
 }
 
 func (s *Schedule) CreateReservation(childAccountId string) (*Schedule, error) {
-	if reservation, err := GenerateReservation(childAccountId, s.Detail.UnitPrice); err != nil {
+	now := time.Now().UTC()
+	if now.After(s.From.Add(time.Duration(30) * time.Minute)) {
+		return nil, config.Error(config.ReservationTimeHasPassed)
+	} else if s.Reservation != nil {
+		return nil, config.Error(config.ReservationIsFull)
+	} else if reservation, err := GenerateReservation(childAccountId, s.Detail.UnitPrice); err != nil {
 		return nil, err
 	} else {
 		s.Reservation = reservation

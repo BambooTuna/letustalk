@@ -8,6 +8,11 @@ import (
 
 type CustomError string
 
+const (
+	ReservationTimeHasPassed CustomError = "予約可能時間を過ぎています"
+	ReservationIsFull        CustomError = "予約が埋まっています"
+)
+
 func ValidateError(fieldName string, errType string) CustomError {
 	errorMessage := "を正しく入力してください"
 	switch errType {

@@ -38,6 +38,27 @@ definitions:
       token:
         type: string
     type: object
+  interfaces.ReservedReservationResponseJson:
+    properties:
+      amount:
+        type: integer
+      childAccountId:
+        type: string
+      from:
+        type: string
+      invoiceId:
+        type: string
+      paid:
+        type: boolean
+      parentAccountId:
+        type: string
+      reservationId:
+        type: string
+      scheduleId:
+        type: string
+      to:
+        type: string
+    type: object
   interfaces.SignRequestJson:
     properties:
       mail:
@@ -262,7 +283,7 @@ paths:
           schema:
             $ref: '#/definitions/json.ErrorMessageJson'
       summary: GetMentorAccountDetails
-  /reservations/{scheduleId}:
+  /reservations/reserve/{scheduleId}:
     post:
       description: Reserve
       parameters:
@@ -284,4 +305,48 @@ paths:
             $ref: '#/definitions/json.ErrorMessageJson'
         "403": {}
       summary: Reserve
+  /reservations/reserved/child:
+    get:
+      description: GetReservedReservationsByChildAccountId
+      parameters:
+      - description: authorization header
+        in: header
+        name: authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/interfaces.ReservedReservationResponseJson'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/json.ErrorMessageJson'
+        "403": {}
+      summary: GetReservedReservationsByChildAccountId
+  /reservations/reserved/parent:
+    get:
+      description: GetReservedReservationsByParentAccountId
+      parameters:
+      - description: authorization header
+        in: header
+        name: authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/interfaces.ReservedReservationResponseJson'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/json.ErrorMessageJson'
+        "403": {}
+      summary: GetReservedReservationsByParentAccountId
 swagger: "2.0"

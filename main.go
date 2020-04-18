@@ -89,7 +89,9 @@ func main() {
 	mentor.GET("/", accountDetailHandler.GetMentorAccountDetailsRoute())
 
 	reservations := api.Group("reservations")
-	reservations.POST("/:scheduleId", scheduleHandler.ReserveRoute("scheduleId"))
+	reservations.GET("/reserved/parent", scheduleHandler.GetReservedReservationsByParentAccountIdRoute())
+	reservations.GET("/reserved/child", scheduleHandler.GetReservedReservationsByChildAccountIdRoute())
+	reservations.POST("/reserve/:scheduleId", scheduleHandler.ReserveRoute("scheduleId"))
 
 	invoices := api.Group("invoices")
 	invoices.GET("/:invoiceId", invoiceDetailHandler.GetInvoiceRoute("invoiceId"))

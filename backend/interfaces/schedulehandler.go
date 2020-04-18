@@ -71,7 +71,7 @@ func (s ScheduleHandler) GetFreeScheduleRoute(paramKey string) func(ctx *gin.Con
 // @Success 200
 // @Failure 400 {object} json.ErrorMessageJson
 // @Failure 403
-// @Router /reservations/{scheduleId} [post]
+// @Router /reservations/reserve/{scheduleId} [post]
 func (s ScheduleHandler) ReserveRoute(paramKey string) func(ctx *gin.Context) {
 	return s.Session.RequiredSession(func(ctx *gin.Context, token string) {
 		scheduleId := ctx.Param(paramKey)
@@ -81,5 +81,79 @@ func (s ScheduleHandler) ReserveRoute(paramKey string) func(ctx *gin.Context) {
 		} else {
 			ctx.Status(http.StatusOK)
 		}
+	})
+}
+
+type ReservedReservationResponseJson struct {
+	ScheduleId      string    `json:"scheduleId"`
+	ReservationId   string    `json:"reservationId"`
+	InvoiceId       string    `json:"invoiceId"`
+	Amount          int       `json:"amount"`
+	Paid            bool      `json:"paid"`
+	ParentAccountId string    `json:"parentAccountId"`
+	ChildAccountId  string    `json:"childAccountId"`
+	From            time.Time `json:"from"`
+	To              time.Time `json:"to"`
+}
+
+// GetReservedReservationsByParentAccountId godoc
+// @Summary GetReservedReservationsByParentAccountId
+// @Description GetReservedReservationsByParentAccountId
+// @Param authorization header string true "authorization header"
+// @Success 200 {array} ReservedReservationResponseJson
+// @Failure 400 {object} json.ErrorMessageJson
+// @Failure 403
+// @Router /reservations/reserved/parent [get]
+func (s ScheduleHandler) GetReservedReservationsByParentAccountIdRoute() func(ctx *gin.Context) {
+	return s.Session.RequiredSession(func(ctx *gin.Context, token string) {
+		accountSessionToken := domain.DecodeToAccountSessionToken(token)
+		result := s.ScheduleUseCase.GetReservedReservationsByParentAccountId(accountSessionToken.AccountId)
+
+		r := make([]*ReservedReservationResponseJson, len(result))
+		for i, e := range result {
+			r[i] = &ReservedReservationResponseJson{
+				ScheduleId:      e.ScheduleId,
+				ReservationId:   e.Reservation.ReservationId,
+				InvoiceId:       e.Reservation.Invoice.InvoiceId,
+				Amount:          e.Reservation.Invoice.Amount,
+				Paid:            e.Reservation.Invoice.Paid,
+				ParentAccountId: e.ParentAccountId,
+				ChildAccountId:  e.Reservation.ChildAccountId,
+				From:            e.From,
+				To:              e.To,
+			}
+		}
+		ctx.JSON(http.StatusOK, r)
+	})
+}
+
+// GetReservedReservationsByChildAccountId godoc
+// @Summary GetReservedReservationsByChildAccountId
+// @Description GetReservedReservationsByChildAccountId
+// @Param authorization header string true "authorization header"
+// @Success 200 {array} ReservedReservationResponseJson
+// @Failure 400 {object} json.ErrorMessageJson
+// @Failure 403
+// @Router /reservations/reserved/child [get]
+func (s ScheduleHandler) GetReservedReservationsByChildAccountIdRoute() func(ctx *gin.Context) {
+	return s.Session.RequiredSession(func(ctx *gin.Context, token string) {
+		accountSessionToken := domain.DecodeToAccountSessionToken(token)
+		result := s.ScheduleUseCase.GetReservedReservationsByChildAccountId(accountSessionToken.AccountId)
+
+		r := make([]*ReservedReservationResponseJson, len(result))
+		for i, e := range result {
+			r[i] = &ReservedReservationResponseJson{
+				ScheduleId:      e.ScheduleId,
+				ReservationId:   e.Reservation.ReservationId,
+				InvoiceId:       e.Reservation.Invoice.InvoiceId,
+				Amount:          e.Reservation.Invoice.Amount,
+				Paid:            e.Reservation.Invoice.Paid,
+				ParentAccountId: e.ParentAccountId,
+				ChildAccountId:  e.Reservation.ChildAccountId,
+				From:            e.From,
+				To:              e.To,
+			}
+		}
+		ctx.JSON(http.StatusOK, r)
 	})
 }

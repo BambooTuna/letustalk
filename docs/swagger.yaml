@@ -1,0 +1,289 @@
+basePath: /v1
+definitions:
+  domain.AccountDetail:
+    properties:
+      accountId:
+        type: string
+      introduction:
+        type: string
+      name:
+        type: string
+    type: object
+  domain.Invoice:
+    properties:
+      amount:
+        type: integer
+      invoiceId:
+        type: string
+      paid:
+        type: boolean
+    type: object
+  interfaces.FreeScheduleResponseJson:
+    properties:
+      from:
+        type: string
+      scheduleId:
+        type: string
+      to:
+        type: string
+      unitPrice:
+        type: integer
+    type: object
+  interfaces.IssueAnInvoiceRequestJson:
+    properties:
+      amount:
+        type: integer
+    type: object
+  interfaces.MakePaymentRequestJson:
+    properties:
+      token:
+        type: string
+    type: object
+  interfaces.SignRequestJson:
+    properties:
+      mail:
+        type: string
+      pass:
+        type: string
+    type: object
+  json.ErrorMessageJson:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server Petstore server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Letustalk API
+  version: "1.0"
+paths:
+  /accounts/{accountId}/schedules:
+    get:
+      description: GetFreeSchedule
+      parameters:
+      - description: accountId
+        in: path
+        name: accountId
+        required: true
+        type: string
+      - description: from
+        in: query
+        name: from
+        type: string
+      - description: to
+        in: query
+        name: to
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/interfaces.FreeScheduleResponseJson'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/json.ErrorMessageJson'
+      summary: GetFreeSchedule
+  /activate/account:
+    put:
+      description: SendActivateMail
+      parameters:
+      - description: authorization header
+        in: header
+        name: authorization
+        required: true
+        type: string
+      responses:
+        "200": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/json.ErrorMessageJson'
+        "403": {}
+      summary: SendActivateMail
+  /activate/account/{code}:
+    get:
+      description: アカウント有効化
+      parameters:
+      - description: アクティベート用コード
+        in: path
+        name: code
+        required: true
+        type: string
+      responses:
+        "200": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/json.ErrorMessageJson'
+      summary: ActivateAccount
+  /auth/signin:
+    post:
+      consumes:
+      - application/json
+      description: SignIn
+      parameters:
+      - description: Mail&Password
+        in: body
+        name: SignRequestJson
+        required: true
+        schema:
+          $ref: '#/definitions/interfaces.SignRequestJson'
+      produces:
+      - application/json
+      responses:
+        "200":
+          headers:
+            set-authorization:
+              description: ログイン用セッショントークン
+              type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/json.ErrorMessageJson'
+      summary: SignIn
+  /auth/signup:
+    post:
+      consumes:
+      - application/json
+      description: SignUp
+      parameters:
+      - description: Mail&Password
+        in: body
+        name: SignRequestJson
+        required: true
+        schema:
+          $ref: '#/definitions/interfaces.SignRequestJson'
+      produces:
+      - application/json
+      responses:
+        "200":
+          headers:
+            set-authorization:
+              description: ログイン用セッショントークン
+              type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/json.ErrorMessageJson'
+      summary: SignUp
+  /invoices/:
+    post:
+      description: IssueAnInvoice
+      parameters:
+      - description: IssueAnInvoiceRequestJson
+        in: body
+        name: IssueAnInvoiceRequestJson
+        required: true
+        schema:
+          $ref: '#/definitions/interfaces.IssueAnInvoiceRequestJson'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Invoice'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/json.ErrorMessageJson'
+      summary: IssueAnInvoice
+  /invoices/{invoiceId}:
+    get:
+      description: GetInvoice
+      parameters:
+      - description: invoiceId
+        in: path
+        name: invoiceId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Invoice'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/json.ErrorMessageJson'
+      summary: GetInvoice
+    post:
+      description: MakePayment
+      parameters:
+      - description: invoiceId
+        in: path
+        name: invoiceId
+        required: true
+        type: string
+      - description: 決済サービスより発行されたトークン
+        in: body
+        name: MakePaymentRequestJson
+        required: true
+        schema:
+          $ref: '#/definitions/interfaces.MakePaymentRequestJson'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Invoice'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/json.ErrorMessageJson'
+      summary: MakePayment
+  /mentor/:
+    get:
+      description: メンター詳細一覧取得
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.AccountDetail'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/json.ErrorMessageJson'
+      summary: GetMentorAccountDetails
+  /reservations/{scheduleId}:
+    post:
+      description: Reserve
+      parameters:
+      - description: scheduleId
+        in: path
+        name: scheduleId
+        required: true
+        type: string
+      - description: authorization header
+        in: header
+        name: authorization
+        required: true
+        type: string
+      responses:
+        "200": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/json.ErrorMessageJson'
+        "403": {}
+      summary: Reserve
+swagger: "2.0"

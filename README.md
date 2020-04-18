@@ -15,11 +15,18 @@ VUE_APP_SERVER_ENDPOINT=http://localhost:8080/v1 \
 npm run build
 ```
 
-3. APIサーバーを起動する
+3. Swaggerコード生成
+```bash
+$ swag init
+```
+
+4. APIサーバーを起動する
 ※フロントの静的ファイルのホスティングも兼ねている
 ```bash
 $ go run main.go
 ```
+
+[swagger](http://localhost:8080/swagger/index.html)
 
 ## テスト
 ```bash

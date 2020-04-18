@@ -82,6 +82,7 @@ func main() {
 
 	activate := api.Group("activate")
 	activate.GET("/account/:code", accountCredentialsHandler.ActivateAccountRoute("code"))
+	activate.PUT("/account", accountCredentialsHandler.SendActivateMailRoute())
 
 	accounts := api.Group("accounts")
 	//accounts.GET("/:accountId", accountDetailHandler.GetAccountDetailRoute("accountId"))

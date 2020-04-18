@@ -67,6 +67,25 @@ func (a AccountCredentialsHandler) ActivateAccountRoute(paramKey string) func(ct
 	}
 }
 
+// SendActivateMail godoc
+// @Summary SendActivateMail
+// @Description SendActivateMail
+// @Param authorization header string true "authorization header"
+// @Success 200
+// @Failure 400 {object} json.ErrorMessageJson
+// @Failure 403
+// @Router /activate/account [put]
+func (a AccountCredentialsHandler) SendActivateMailRoute() func(ctx *gin.Context) {
+	return a.Session.RequiredSession(func(ctx *gin.Context, token string) {
+		accountSessionToken := domain.DecodeToAccountSessionToken(token)
+		if err := a.AccountCredentialsUseCase.IssueActivateCode(accountSessionToken.AccountId); err != nil {
+			ctx.JSON(http.StatusBadRequest, json.ErrorMessageJson{Message: err.Error()})
+		} else {
+			ctx.Status(http.StatusOK)
+		}
+	})
+}
+
 // SignIn godoc
 // @Summary SignIn
 // @Description SignIn

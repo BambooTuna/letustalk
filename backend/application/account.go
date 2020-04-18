@@ -24,6 +24,18 @@ func (a AccountCredentialsUseCase) SignUp(mail, password string) (*domain.Accoun
 	}
 }
 
+func (a AccountCredentialsUseCase) IssueActivateCode(accountId string) error {
+	if accountCredentials, err := a.AccountCredentialsRepository.ResolveByAccountId(accountId); err != nil {
+		return err
+	} else if accountCredentials.Activated == true {
+		return config.Error("すでにアクティベートされています")
+	} else if _, err := a.ActivatorUseCase.IssueCode(accountCredentials.AccountId, accountCredentials.Mail); err != nil {
+		return err
+	} else {
+		return nil
+	}
+}
+
 func (a AccountCredentialsUseCase) ActivateAccount(code string) error {
 	if accountId, err := a.ActivatorUseCase.Activate(code); err != nil {
 		return err

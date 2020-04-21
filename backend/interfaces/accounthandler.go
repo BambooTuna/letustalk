@@ -1,14 +1,15 @@
 package interfaces
 
 import (
+	"net/http"
+	"strconv"
+
 	"github.com/BambooTuna/go-server-lib/session"
 	"github.com/BambooTuna/letustalk/backend/application"
 	"github.com/BambooTuna/letustalk/backend/config"
 	"github.com/BambooTuna/letustalk/backend/domain"
 	"github.com/BambooTuna/letustalk/backend/interfaces/json"
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"strconv"
 )
 
 type AccountCredentialsHandler struct {
@@ -132,12 +133,18 @@ func (a AccountDetailHandler) GetAccountDetailsRoute() func(ctx *gin.Context) {
 	}
 }
 
+type AccountDetailResponseJson struct {
+	AccountId    string `json:"accountId"`
+	Name         string `json:"name"`
+	Introduction string `json:"introduction" validate:"gte=0,lt=1000"`
+}
+
 // GetMentorAccountDetails godoc
 // @Summary GetMentorAccountDetails
 // @Description メンター詳細一覧取得
 // @Param page query string false "page"
 // @Param limit query string false "limit"
-// @Success 200 {array} domain.AccountDetail
+// @Success 200 {array} AccountDetailResponseJson
 // @Failure 400 {object} json.ErrorMessageJson
 // @Router /mentor/ [get]
 func (a AccountDetailHandler) GetMentorAccountDetailsRoute() func(ctx *gin.Context) {
@@ -149,7 +156,16 @@ func (a AccountDetailHandler) GetMentorAccountDetailsRoute() func(ctx *gin.Conte
 			return
 		}
 		quantityLimit := config.QuantityLimit{Page: page, Limit: limit}
-		ctx.JSON(http.StatusOK, a.AccountDetailUseCase.GetMentorAccountDetails(quantityLimit))
+		result := a.AccountDetailUseCase.GetMentorAccountDetails(quantityLimit)
+		r := make([]*AccountDetailResponseJson, len(result))
+		for i, e := range result {
+			r[i] = &AccountDetailResponseJson{
+				AccountId:    e.AccountId,
+				Name:         e.Name,
+				Introduction: e.Introduction,
+			}
+		}
+		ctx.JSON(http.StatusOK, r)
 	}
 }
 

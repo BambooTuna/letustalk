@@ -223,7 +223,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.Invoice"
+                            "$ref": "#/definitions/interfaces.InvoiceResponseJson"
                         }
                     },
                     "400": {
@@ -252,7 +252,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.Invoice"
+                            "$ref": "#/definitions/interfaces.InvoiceResponseJson"
                         }
                     },
                     "400": {
@@ -288,7 +288,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.Invoice"
+                            "$ref": "#/definitions/interfaces.InvoiceResponseJson"
                         }
                     },
                     "400": {
@@ -324,7 +324,7 @@ var doc = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/domain.AccountDetail"
+                                "$ref": "#/definitions/interfaces.AccountDetailResponseJson"
                             }
                         }
                     },
@@ -437,7 +437,7 @@ var doc = `{
         }
     },
     "definitions": {
-        "domain.AccountDetail": {
+        "interfaces.AccountDetailResponseJson": {
             "type": "object",
             "properties": {
                 "accountId": {
@@ -448,20 +448,6 @@ var doc = `{
                 },
                 "name": {
                     "type": "string"
-                }
-            }
-        },
-        "domain.Invoice": {
-            "type": "object",
-            "properties": {
-                "amount": {
-                    "type": "integer"
-                },
-                "invoiceId": {
-                    "type": "string"
-                },
-                "paid": {
-                    "type": "boolean"
                 }
             }
         },
@@ -479,6 +465,20 @@ var doc = `{
                 },
                 "unitPrice": {
                     "type": "integer"
+                }
+            }
+        },
+        "interfaces.InvoiceResponseJson": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "invoiceId": {
+                    "type": "string"
+                },
+                "paid": {
+                    "type": "boolean"
                 }
             }
         },

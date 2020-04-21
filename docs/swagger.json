@@ -206,7 +206,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.Invoice"
+                            "$ref": "#/definitions/interfaces.InvoiceResponseJson"
                         }
                     },
                     "400": {
@@ -235,7 +235,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.Invoice"
+                            "$ref": "#/definitions/interfaces.InvoiceResponseJson"
                         }
                     },
                     "400": {
@@ -271,7 +271,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.Invoice"
+                            "$ref": "#/definitions/interfaces.InvoiceResponseJson"
                         }
                     },
                     "400": {
@@ -307,7 +307,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/domain.AccountDetail"
+                                "$ref": "#/definitions/interfaces.AccountDetailResponseJson"
                             }
                         }
                     },
@@ -420,7 +420,7 @@
         }
     },
     "definitions": {
-        "domain.AccountDetail": {
+        "interfaces.AccountDetailResponseJson": {
             "type": "object",
             "properties": {
                 "accountId": {
@@ -431,20 +431,6 @@
                 },
                 "name": {
                     "type": "string"
-                }
-            }
-        },
-        "domain.Invoice": {
-            "type": "object",
-            "properties": {
-                "amount": {
-                    "type": "integer"
-                },
-                "invoiceId": {
-                    "type": "string"
-                },
-                "paid": {
-                    "type": "boolean"
                 }
             }
         },
@@ -462,6 +448,20 @@
                 },
                 "unitPrice": {
                     "type": "integer"
+                }
+            }
+        },
+        "interfaces.InvoiceResponseJson": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "invoiceId": {
+                    "type": "string"
+                },
+                "paid": {
+                    "type": "boolean"
                 }
             }
         },

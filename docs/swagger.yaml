@@ -1,5 +1,5 @@
 definitions:
-  domain.AccountDetail:
+  interfaces.AccountDetailResponseJson:
     properties:
       accountId:
         type: string
@@ -7,15 +7,6 @@ definitions:
         type: string
       name:
         type: string
-    type: object
-  domain.Invoice:
-    properties:
-      amount:
-        type: integer
-      invoiceId:
-        type: string
-      paid:
-        type: boolean
     type: object
   interfaces.FreeScheduleResponseJson:
     properties:
@@ -27,6 +18,15 @@ definitions:
         type: string
       unitPrice:
         type: integer
+    type: object
+  interfaces.InvoiceResponseJson:
+    properties:
+      amount:
+        type: integer
+      invoiceId:
+        type: string
+      paid:
+        type: boolean
     type: object
   interfaces.IssueAnInvoiceRequestJson:
     properties:
@@ -210,7 +210,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.Invoice'
+            $ref: '#/definitions/interfaces.InvoiceResponseJson'
         "400":
           description: Bad Request
           schema:
@@ -229,7 +229,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.Invoice'
+            $ref: '#/definitions/interfaces.InvoiceResponseJson'
         "400":
           description: Bad Request
           schema:
@@ -253,7 +253,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.Invoice'
+            $ref: '#/definitions/interfaces.InvoiceResponseJson'
         "400":
           description: Bad Request
           schema:
@@ -276,7 +276,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/domain.AccountDetail'
+              $ref: '#/definitions/interfaces.AccountDetailResponseJson'
             type: array
         "400":
           description: Bad Request

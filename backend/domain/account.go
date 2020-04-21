@@ -73,7 +73,7 @@ func (a *AccountCredentials) ChangePosition(newPosition AccountPosition) *Accoun
 }
 
 type AccountDetail struct {
-	AccountId    string `json:"accountId"`
-	Name         string `json:"name"`
-	Introduction string `json:"introduction" validate:"gte=0,lt=1000"`
+	AccountId    string
+	Name         string
+	Introduction string
 }

@@ -15,15 +15,16 @@ CREATE TABLE `account_credentials` (
     `mail` VARCHAR(255) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
     `position` VARCHAR(255) NOT NULL default 'general',
+    `activated` boolean NOT NULL default false,
     PRIMARY KEY (`account_id`),
     UNIQUE KEY (`mail`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-INSERT INTO `account_credentials` (`account_id`, `mail`, `password`, `position`) VALUES
-("1", "1@gmail.com", "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1", "mentor"),
-("2", "2@gmail.com", "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1", "mentor"),
-("3", "3@gmail.com", "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1", "mentor"),
-("4", "4@gmail.com", "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1", "mentor"),
-("5", "5@gmail.com", "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1", "mentor");
+INSERT INTO `account_credentials` (`account_id`, `mail`, `password`, `position`, `activated`) VALUES
+("1", "1@gmail.com", "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1", "mentor", true),
+("2", "2@gmail.com", "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1", "mentor", true),
+("3", "3@gmail.com", "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1", "mentor", true),
+("4", "4@gmail.com", "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1", "mentor", true),
+("5", "5@gmail.com", "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1", "mentor", true);
 
 CREATE TABLE `account_detail` (
     `account_id` VARCHAR(255) NOT NULL,

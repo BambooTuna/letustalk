@@ -10,8 +10,8 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=BambooTuna
       - MYSQL_PASSWORD=pass
-#  redis:
-#    image: redis:3.2.4-alpine
-#    restart: always
-#    ports:
-#      - 6379:6379
+  redis:
+    image: redis:3.2.4-alpine
+    restart: always
+    ports:
+      - 6379:6379

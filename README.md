@@ -1,29 +1,40 @@
 # letustalk
 
-
-## 請求
+## ローカル動作確認
+1. インフラの構築
 ```bash
-$ curl -X GET localhost:8080/v1/invoice/:invoiceId -i
-$ curl -X POST -H "Content-Type: application/json" -d '{"amount":1000}' localhost:8080/v1/invoice -i
-
-$ curl -X POST -H "Content-Type: application/json" -d '{"token":""}' -i localhost:8080/v1/pay/:invoiceId
+$ cd infra
+$ docker-compose up --build
 ```
 
-## ユーザー
+2. フロントのVueプロジェクトをBuildして静的ファイルを作る
 ```bash
-$ curl -X GET localhost:8080/v1/mentor -i
+$ cd front
+$ VUE_APP_PAYMENT_PUB_KEY=pk_test_6acc32ac21aa1b0f55d5e3b8 \
+VUE_APP_SERVER_ENDPOINT=http://localhost:8080/v1 \
+npm run build
 ```
 
-## スケジュール
-
+3. Swaggerコード生成
 ```bash
-$ curl -X GET "localhost:8080/v1/account/1/schedule?from=20200420000000&to=20200420030000"
+$ swag init
 ```
 
-## Wiki
-https://github.com/BambooTuna/letustalk/wiki
+4. APIサーバーを起動する
+※フロントの静的ファイルのホスティングも兼ねている
+```bash
+$ go run main.go
+```
 
-## Go Test
+[swagger](http://localhost:8080/swagger/index.html)
+
+## テスト
 ```bash
 $ go test ./... -v
+
+$ cd front
+$ npm run lint
 ```
+
+## バックエンドAPIについて
+https://github.com/BambooTuna/letustalk/wiki

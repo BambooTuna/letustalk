@@ -1,0 +1,37 @@
+runtime: go113
+service: default
+instance_class: F1
+automatic_scaling:
+  min_idle_instances: automatic
+  max_idle_instances: 1
+  min_pending_latency: 3000ms
+  max_pending_latency: automatic
+  target_cpu_utilization: 0.95
+  target_throughput_utilization: 0.95
+  max_concurrent_requests: 80
+
+handlers:
+- url: /.*
+  script: auto
+
+vpc_access_connector:
+  name: "projects/letustalk/locations/us-central1/connectors/letustalk-connect"
+
+env_variables:
+  PORT: 8080
+  GIN_MODE: release
+  SESSION_SECRET: ${SESSION_SECRET}
+  MYSQL_USER: ${MYSQL_USER}
+  MYSQL_PASS: ${MYSQL_PASS}
+  MYSQL_HOST: ${MYSQL_HOST}
+  MYSQL_PORT: ${MYSQL_PORT}
+  MYSQL_DATABASE: ${MYSQL_DATABASE}
+  REDIS_HOST: ${REDIS_HOST}
+  REDIS_PORT: ${REDIS_PORT}
+  SMTP_USER_NAME: ${SMTP_USER_NAME}
+  SMTP_PASSWORD: ${SMTP_PASSWORD}
+  SMTP_HOST: ${SMTP_HOST}
+  SMTP_PORT: ${SMTP_PORT}
+  SMTP_FROM_ADDRESS: ${SMTP_FROM_ADDRESS}
+  SWAGGER_SCHEMES: ${SWAGGER_SCHEMES}
+  SWAGGER_HOST: ${SWAGGER_HOST}
